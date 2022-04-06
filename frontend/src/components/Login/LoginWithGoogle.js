@@ -2,15 +2,11 @@ import React from 'react';
 import GoogleLogin from 'react-google-login';
 import axios from 'axios';
 
-function LoginWithGoogle() {
+function LoginWithGoogle(props) {
     const responseSuccessGoogle = (response) => {
         axios.post("http://localhost:5000/users/auth/google", {tokenId: response.tokenId})
-            .then(res => {
-                localStorage.setItem("user", JSON.stringify(res.data))
-            })
-            .catch(err => {
-                console.log(err)
-            })
+            .then(res => props.authenticationSuccess(res))
+            .catch(err => props.authenticationFail(err))
     }
 
     const responseFailureGoogle = (response) => {

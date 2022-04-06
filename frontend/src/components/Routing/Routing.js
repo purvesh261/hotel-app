@@ -1,14 +1,11 @@
 import React from 'react';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import { ROUTES, RenderRouter } from './routes';
 
 function Routing() {
     return (
-    <Router>
-        <Routes>
-            <Route></Route>
-        </Routes>
-    </Router>
+        <RenderRouter routes={ROUTES} />
     )
 }
 
-export default Routing
+export default Routing;

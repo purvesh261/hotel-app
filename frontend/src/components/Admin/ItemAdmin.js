@@ -30,11 +30,13 @@ function ItemAdmin() {
     return (
         <div>
             <MenuOptions items={items} setItems={setTempItems} />
+            {error && <span>{error}</span>}
             {items.length > 0 && tempItems.map((item, index) => {
                 return <div>
                     <span>{item.itemName}</span>
                     <span>{item.description}</span>
                     <span>{item.price}</span>
+
                 </div>
             })}
         </div>
