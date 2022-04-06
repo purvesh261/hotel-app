@@ -20,7 +20,7 @@ exports.getUsers = (req, res) => {
 exports.authenticate = (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({errors: errors.array()});
+      return res.status(400).json({error: "Invalid Input"});
     }
 
     User.findOne({email: req.body.email})
