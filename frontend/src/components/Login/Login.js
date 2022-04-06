@@ -18,7 +18,8 @@ function Login() {
                 }
                 else
                 {
-                    localStorage.setItem("user", JSON.stringify(res.data))
+                    localStorage.setItem('accessToken', res.data.accessToken)
+                    localStorage.setItem('user', JSON.stringify(res.data))
                     console.log(localStorage);
                 }
                 
