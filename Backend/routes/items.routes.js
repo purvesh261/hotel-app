@@ -4,10 +4,10 @@ const { body } = require('express-validator');
 const { authenticateToken, isAdmin } = require('../controller/authorization')
 const controller = require('../controller/items.controller')
 
-router.get('/', authenticateToken, controller.getItems);
+router.get('/',  controller.getItems);
 router.post('/create', 
-    authenticateToken,
-    isAdmin,
+    // authenticateToken,
+    // isAdmin,
     body('itemName')
         .isAlphanumeric('en-US', {ignore: ' '})
         .isLength({ min: 3 }),

@@ -4,6 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
+const fileUpload = require('express-fileupload');
 const cors = require('cors');
 const users = require('./routes/users.routes');
 const items = require('./routes/items.routes');
@@ -13,6 +14,8 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.use('/static', express.static('public'))
+app.use(fileUpload());
 app.use('/users', users);
 app.use('/items', items);
 
