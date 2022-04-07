@@ -29,7 +29,7 @@ function ItemAdmin() {
 
     return (
         <div>
-            <MenuOptions items={items} setItems={setTempItems} />
+            <MenuOptions allItems={items} items={tempItems} setItems={setTempItems} />
             {error && <span>{error}</span>}
             {items.length > 0 && tempItems.map((item, index) => {
                 return <div>

@@ -1,4 +1,4 @@
-.App {
+/* .App {
   text-align: center;
 }
 
@@ -35,4 +35,16 @@
   to {
     transform: rotate(360deg);
   }
+} */
+
+@media only screen and (max-width: 600px) {
+  .itemCard {
+    background-color: rgb(228, 237, 239);
+    margin: 100px;
+  }
+}
+
+.itemCard {
+  background-color: rgb(118, 28, 28);
+  margin: 100px;
 }
