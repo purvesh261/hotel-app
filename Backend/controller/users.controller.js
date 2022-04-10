@@ -7,14 +7,14 @@ const {OAuth2Client} = require('google-auth-library');
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 
-exports.getUsers = (req, res) => {
-    User.find()
-        .then(users => {
-            res.send(users);
-        })
-        .catch(err => {
-            res.json({'error': err})
-        })
+exports.getUsers = async (req, res) => {
+    try{
+        const users = await User.find()
+        res.send(users);
+    }
+    catch{
+        return res.sendStatus(500);
+    }
 }
 
 exports.authenticate = (req, res) => {
@@ -42,35 +42,30 @@ exports.authenticate = (req, res) => {
         });
 }
 
-exports.createUser = (req, res) => {
+exports.createUser = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    User.findOne({email: req.body.email})
-        .then(user => {
-            if(user)
-            {
-                return res.json({"error":"User already exists"});
-            }
-        })
-        .catch(err => {
-            return res.json({"error":err});
-        })
-
-    const newUser = req.body;
-
-    newUser.password = bcrypt.hashSync(newUser.password, 10);
-    User.create(newUser)
-        .then(user => {
-            user.save()
-            const sendData = generateAccessToken(user);
-            res.json(sendData);
-        })
-        .catch(err => {
-            res.json({'error': err});
-        });
+    try
+    {
+        const userExists = await User.findOne({email: req.body.email})
+        if(userExists)
+        {
+            return res.json({"error":"User already exists"});
+        }
+        const newUser = req.body;
+        newUser.password = bcrypt.hashSync(newUser.password, 10);
+        const user = await User.create(newUser)
+        user.save();
+        const sendData = generateAccessToken(user);
+        res.json(sendData);
+    }
+    catch
+    {
+        return res.sendStatus(500);
+    }
 }
 
 exports.updateUser = (req, res) => {

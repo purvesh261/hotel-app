@@ -15,6 +15,10 @@ exports.getItems = (req, res) => {
 const processImages = async (req, res, item) => {
     if (req.files) {
         let image = req.files.image;
+        if(!image.length)
+        {
+            image = [image]
+        }
         var imageArray = []
 
         for(let img of image)
@@ -34,7 +38,13 @@ const processImages = async (req, res, item) => {
             }
         }
         item.image = imageArray;
-        item.save();
+        item.save()
+        .then(item => {  
+            res.send(item);
+        })
+        .catch(err => {
+            return res.status(500);
+        })
     }
     else{
         item.images = null;
@@ -49,13 +59,6 @@ exports.createItem = (req, res) => {
     }
     let item = new Item(req.body);
     processImages(req, res, item);
-    item.save()
-    .then(item => {  
-        res.send(item);
-    })
-    .catch(err => {
-        return res.status(500);
-    })
 
 }
 
