@@ -5,9 +5,11 @@ import CreateItem from '../Admin/CreateItem';
 import ItemAdmin from '../Admin/ItemAdmin';
 import SignUp from '../Login/SignUp';
 import { Route, Routes, Navigate } from 'react-router-dom';
+import ItemDetails from '../Menu/ItemDetails';
 
 export const ROUTES = [
     { path: '/', key:"MENU", exact:true, element:<Menu />, protected: true, admin: false},
+    { path: '/items/:id', key:"ITEM", exact:true, element:<ItemDetails />, protected: true, admin: false},
     { path: '/login', key:"LOGIN", exact:true, element:<Login />, protected: false},
     { path: '/sign-up', key:"SIGNUP", exact:true, element:<SignUp />, protected: false},
     { path: '/admin', key:"ADMIN", exact:true, element:<ItemAdmin />, protected: true, admin: true},

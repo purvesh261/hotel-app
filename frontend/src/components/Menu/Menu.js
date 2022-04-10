@@ -3,6 +3,7 @@ import MenuOptions from './MenuOptions';
 import axios from 'axios';
 import ItemCard from './ItemCard';
 import Grid from '@mui/material/Grid';
+import { Typography } from '@mui/material';
 import defaultImage from '../../assets/defaultFood.jpg';
 
 function Menu() {
@@ -50,9 +51,9 @@ function Menu() {
                             return <Grid item xs={12} sm={6} md={4} lg={3} key={index}> <ItemCard item={item} /> </Grid>
                         })
                         :
-                        <div className="col-md-12 text-center p-5 text-secondary">
-                            <h3>No products found</h3>
-                        </div>
+                        <Typography component="h3" variant="h4" color="text.secondary" sx={{margin:"auto", mt:"30px"}}>
+                            No products found
+                        </Typography>
                     }
 
             </Grid>

@@ -1,13 +1,14 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../App.css';
+import { useNavigate } from 'react-router-dom';
+import ItemDetails from './ItemDetails';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
-import { Button, CardActionArea, CardActions } from '@mui/material';
-
+import { Button, CardActionArea, CardActions, Box, Typography } from '@mui/material';
 
 export default function ItemCard({ item }) {
+  const navigate = useNavigate();
 
   const styles =  theme => ({ 
       maxWidth: 345,
@@ -24,7 +25,7 @@ export default function ItemCard({ item }) {
 
   return (
     <Card sx={styles} className="itemCard">
-      <CardActionArea>
+      <CardActionArea onClick={() => navigate("/items/" + item._id)}>
         <CardMedia
           component="img"
           height="160"
@@ -44,7 +45,7 @@ export default function ItemCard({ item }) {
         </CardContent>
       </CardActionArea>
       <CardActions>
-        <Button size="small" color="primary">
+        <Button size="small" color="primary" onClick={() => navigate("/items/" + item._id)} >
           View More
         </Button>
       </CardActions>
