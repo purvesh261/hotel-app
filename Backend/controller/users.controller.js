@@ -12,7 +12,7 @@ exports.getUsers = async (req, res) => {
         const users = await User.find()
         res.send(users);
     }
-    catch{
+    catch(err){
         return res.sendStatus(500);
     }
 }
@@ -62,7 +62,7 @@ exports.createUser = async (req, res) => {
         const sendData = generateAccessToken(user);
         res.json(sendData);
     }
-    catch
+    catch(err)
     {
         return res.sendStatus(500);
     }

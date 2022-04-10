@@ -4,7 +4,8 @@ const { body } = require('express-validator');
 const { authenticateToken, isAdmin } = require('../controller/authorization')
 const controller = require('../controller/items.controller')
 
-router.get('/',  controller.getItems);
+router.get('/', authenticateToken, controller.getItems);
+router.get('/:id', authenticateToken, controller.getItemById);
 router.post('/create', 
     // authenticateToken,
     // isAdmin,

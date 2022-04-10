@@ -12,6 +12,20 @@ exports.getItems = (req, res) => {
         })
 }
 
+exports.getItemById = async (req, res) => {
+    try{
+        const item = await Item.findById(req.params.id)
+        if(!item){
+            return res.status(404).json({"error":"Item not found"});
+        }
+        res.send(item)
+    }
+    catch(err) {
+        res.sendStatus(500)
+    }
+
+}
+
 const processImages = async (req, res, item) => {
     if (req.files) {
         let image = req.files.image;
