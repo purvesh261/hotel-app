@@ -1,5 +1,6 @@
 import React from 'react';
 import GoogleLogin from 'react-google-login';
+import GoogleButton from 'react-google-button'
 import axios from 'axios';
 
 function LoginWithGoogle(props) {
@@ -15,9 +16,15 @@ function LoginWithGoogle(props) {
 
     return (
     <div>
+
         <GoogleLogin
             clientId="192480243308-nhs9est1ogdph1eavhnuiprdpdugg7ms.apps.googleusercontent.com"
             buttonText="Login"
+            render={(renderProps) => 
+                    <GoogleButton 
+                        style={{width:"100%", marginBottom:"10px"}} 
+                        onClick={renderProps.onClick} 
+                        disabled={renderProps.disabled}/>}
             onSuccess={responseSuccessGoogle}
             onFailure={responseFailureGoogle}
             cookiePolicy={'single_host_origin'}

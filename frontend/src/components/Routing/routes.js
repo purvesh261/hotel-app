@@ -3,16 +3,16 @@ import Login from '../Login/Login';
 import Menu from '../Menu/Menu';
 import CreateItem from '../Admin/CreateItem';
 import ItemAdmin from '../Admin/ItemAdmin';
+import SignUp from '../Login/SignUp';
 import { Route, Routes, Navigate } from 'react-router-dom';
 
 export const ROUTES = [
     { path: '/', key:"MENU", exact:true, element:<Menu />, protected: true, admin: false},
     { path: '/login', key:"LOGIN", exact:true, element:<Login />, protected: false},
+    { path: '/sign-up', key:"SIGNUP", exact:true, element:<SignUp />, protected: false},
     { path: '/admin', key:"ADMIN", exact:true, element:<ItemAdmin />, protected: true, admin: true},
     { path: '/admin/create-item', key:"CREATE_ITEM", exact:true, element:<CreateItem />, protected: true, admin: true},
 ]
-
-
 
 const ProtectedRoute = ({ adminRoute, children}) => 
 {

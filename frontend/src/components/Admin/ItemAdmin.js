@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import MenuOptions from '../Menu/MenuOptions';
 import axios from 'axios';
+import ItemTable from './ItemTable';
 
 function ItemAdmin() {
     const [ items, setItems ] = useState([]);
@@ -31,14 +32,7 @@ function ItemAdmin() {
         <div>
             <MenuOptions allItems={items} items={tempItems} setItems={setTempItems} />
             {error && <span>{error}</span>}
-            {items.length > 0 && tempItems.map((item, index) => {
-                return <div>
-                    <span>{item.itemName}</span>
-                    <span>{item.description}</span>
-                    <span>{item.price}</span>
-
-                </div>
-            })}
+            <ItemTable rows={tempItems}/>
         </div>
     )
 }
