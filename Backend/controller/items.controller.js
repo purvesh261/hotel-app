@@ -62,6 +62,7 @@ const processImages = async (req, res, item) => {
     }
     else{
         item.images = null;
+        item.save();
     }
     
 }
@@ -71,6 +72,8 @@ exports.createItem = (req, res) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
+    let itemBody = req.body
+    itemBody.price = Number(itemBody.price).toFixed(2);
     let item = new Item(req.body);
     processImages(req, res, item);
 

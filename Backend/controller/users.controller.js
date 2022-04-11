@@ -111,44 +111,38 @@ exports.deleteUser = (req, res) => {
 }
 
 const generateRandomPassword = () => {
-    return bcrypt.hashSync((Math.random() + 1).toString(36).substring(7), 10);
+    var passwordLength = Math.floor(Math.random() * 5) + 8;
+    var charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~`! @#$%^&*()_-+={[}]|\\:;\"'<,>.?/";
+    var password = "";
+    for(var i=0, n = charset.length; i < passwordLength; i++)
+    {
+        password += charset.charAt(Math.floor(Math.random() * n));
+    }
+    console.log(password,"password")
+    return bcrypt.hashSync(password, 10);
 }
 
-exports.googleLogin = (req, res) => {
+exports.googleLogin = async (req, res) => {
     const {tokenId} = req.body;
     client.verifyIdToken({ idToken: tokenId, audience:process.env.GOOGLE_CLIENT_ID})
-        .then(response => {
-            const { email_verified, email } = response.payload;
-            if(email_verified) {
-                User.findOne({email})
-                    .then(user => {
-                        if(user)
-                        {
-                            const sendData = generateAccessToken(user);
-                            res.send(sendData);
-                        }
-                        else
-                        {
-                            let password = generateRandomPassword()
-                            let newUser = new User({ email, password , admin:false});
-                            console.log(newUser)
-                            newUser.save((err, data) => {
-                                if (err)
-                                {
-                                    return res.sendStatus(400);
-                                }
-                                const sendData = generateAccessToken(data);
-                                res.send(sendData);
-                            });
-
-                        }
-                    })
-                    .catch(err => {
-                        return res.sendStatus(400)
-                    })
+        .then(async (response) => {
+            const { email } = response.payload;
+            try {
+                var user = await User.findOne({email})
+                if(user)
+                {
+                    var sendData = generateAccessToken(user);
+                    return res.send(sendData);
+                }
+                var password = generateRandomPassword()
+                var newUser = new User({ email, password , admin:false});
+                var data = await newUser.save();
+                var sendData = generateAccessToken(data);
+                res.send(sendData);
             }
-            else{
-                res.sendStatus(400)
+            catch(err)
+            {
+                return res.sendStatus(500)
             }
         })
         .catch(err => {
