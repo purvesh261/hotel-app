@@ -47,26 +47,27 @@ function CreateItem() {
         {
             setFormValues({...formValues, [name]: value});
         }
-        console.log(formValues)
-
     }
-    const onSubmitHandler = async (event) => {
+
+    const onSubmitHandler = (event) => {
         event.preventDefault();
         var formData = new FormData();
         formData.append('itemName', formValues.itemName);
         formData.append('description', formValues.description);
         formData.append('category', formValues.category);
         formData.append('price', formValues.price);
-        formValues.image.forEach((img) => formData.append('image', img))
-        console.log(formData)
+        if(formValues.image.length > 0)
+        {
+            formValues.image.forEach((img) => formData.append('image', img))
+        }
         axios.post('http://localhost:5000/items/create', formData,
         {headers: {'Authorization': 'Bearer ' + localStorage.getItem('accessToken')}})
         .then(res => {
-            navigate('/admin')
+            navigate('/admin');
         })
         .catch(err => {
             setAlert("Something went wrong. Try again later.")
-            setTimeout(() => {setAlert("")}, 3000)
+            setTimeout(() => setAlert(""), 3000)
         })
     }
     return (
@@ -102,7 +103,6 @@ function CreateItem() {
                                     value={formValues.itemName}
                                     onChange={onChangeHandler}
                                 />
-                                    {/* <input type='text' name='itemName' value={formValues.itemName} placeholder='Name' onChange={onChangeHandler} required></input><br/> */}
                                 </Grid>
                                 <Grid item xs={12}>
                                 <TextField
@@ -114,8 +114,7 @@ function CreateItem() {
                                     name="description"
                                     value={formValues.description}
                                     onChange={onChangeHandler}
-                                />
-                                    {/* <textarea name='description' value={formValues.description} placeholder='Write a description' onChange={onChangeHandler}></textarea><br/> */}
+                                />                                    
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
@@ -127,7 +126,6 @@ function CreateItem() {
                                         value={formValues.category}
                                         onChange={onChangeHandler}
                                     />
-                                    {/* <input type='text' name='category' value={formValues.category} placeholder='Category' onChange={onChangeHandler} required></input><br/> */}
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
@@ -141,10 +139,9 @@ function CreateItem() {
                                         value={formValues.price}
                                         onChange={onChangeHandler}
                                     />
-                                    {/* <input type='number' name='price' value={formValues.price} placeholder='Price' onChange={onChangeHandler} min={0}></input><br/> */}
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <Paper elevation={1} variant="outlined" sx={{margin:"5px"}}>
+                                    <Paper variant="outlined" sx={{margin:"5px"}}>
                                         <Grid container sx={{padding:"10px"}}>
                                             <Grid item xs={9}>
                                                 <Typography variant="h6">
@@ -181,7 +178,6 @@ function CreateItem() {
                                                                             <ImageIcon/>
                                                                         </ListItemIcon>
                                                                         {img.name}
-                                                                        {/* <Button onClick={() => removeImage(index)}><DeleteIcon sx={{color:"#757575"}}/></Button> */}
                                                                     </ListItem>
                                                         })}
 
@@ -206,22 +202,6 @@ function CreateItem() {
                     </Box>
                 </Container>
             </ThemeProvider>
-            {/* Create Item
-            <form onSubmit={onSubmitHandler}>
-                { alert && <span>{alert}<br/></span>}
-                <input type='file' name='image' style={fileInputStyle} onChange={onChangeHandler}></input><br/>
-
-                Uploaded images:<br/>
-                {
-                    formValues.image.length > 0 ?
-                    formValues.image.map((img, index) => {
-                        return <span key={index}>{img.name}<button onClick={() => removeImage(index)}>X</button><br/></span>
-                    })
-                    :
-                    <span>Uploaded images will be listed here...<br/></span>
-                } */}
-                {/* <input type='submit' value='Create Item'></input> */}
-            {/* </form> */}
         </div>
     )
 }

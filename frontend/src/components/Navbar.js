@@ -59,7 +59,7 @@ export default function MenuAppBar() {
           >
             <MenuIcon/>
           </IconButton> */}
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, cursor:"pointer" }} onClick={() => titleClick()} >
+          <Typography variant="h6" component="span" sx={{ flexGrow: 1, cursor:"pointer" }} onClick={() => titleClick()} >
             Hotel Menu
           </Typography>
           {user && (

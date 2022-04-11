@@ -38,7 +38,7 @@ exports.authenticate = (req, res) => {
             }
         })
         .catch(err => {
-            res.json({"error": err});
+            return res.sendStatus(500);
         });
 }
 
@@ -80,7 +80,7 @@ exports.updateUser = (req, res) => {
             res.send(user);
         })
         .catch(err => {
-            res.json({'error': err});
+            res.sendStatus(500);
         });
     }
     else
@@ -101,7 +101,7 @@ exports.deleteUser = (req, res) => {
             res.send(user);
         })
         .catch(err => {
-            res.json({'error': err});
+            res.sendStatus(500);
         });
     }
     else
@@ -118,7 +118,6 @@ const generateRandomPassword = () => {
     {
         password += charset.charAt(Math.floor(Math.random() * n));
     }
-    console.log(password,"password")
     return bcrypt.hashSync(password, 10);
 }
 
@@ -146,6 +145,6 @@ exports.googleLogin = async (req, res) => {
             }
         })
         .catch(err => {
-            res.json({"error": err})
+            return res.sendStatus(500)
         })
 }

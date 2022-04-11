@@ -62,9 +62,11 @@ const processImages = async (req, res, item) => {
     }
     else{
         item.images = null;
-        item.save();
+        item.save()
+        .then(item => {  
+            res.send(item);
+        })
     }
-    
 }
 
 exports.createItem = (req, res) => {
@@ -76,6 +78,7 @@ exports.createItem = (req, res) => {
     itemBody.price = Number(itemBody.price).toFixed(2);
     let item = new Item(req.body);
     processImages(req, res, item);
+    res.send()
 
 }
 

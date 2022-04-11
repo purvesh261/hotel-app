@@ -89,9 +89,8 @@ export default function ItemTable(props) {
     
     const getVisibleRows = () => {
         let start = page * rowsPerPage;
-        let newRows = props.rows.slice(start, start + rowsPerPage)      
-        console.log(newRows,"new rows")  
-        setVisibleRows(newRows)
+        let newRows = props.rows.slice(start, start + rowsPerPage);
+        setVisibleRows(newRows);
     }
 
     React.useEffect(() => {
@@ -112,12 +111,11 @@ export default function ItemTable(props) {
                 </TableRow>
                 </TableHead>
                 <TableBody>
-                {visibleRows.map((row) => (
-                    <Row key={row.itemName} row={row} />
+                {visibleRows.map((row, index) => (
+                    <Row key={index} row={row} />
                 ))}
                 </TableBody>
             </Table>
-            </TableContainer>
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
@@ -127,6 +125,7 @@ export default function ItemTable(props) {
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
             />
+            </TableContainer>
         </>
     );
 }
