@@ -180,7 +180,7 @@ function Login() {
             </Button>
             <Grid container>
                 <Grid item xs={12}>
-                    <LoginWithGoogle authenticationSuccess={authenticationSuccess} authenticationFail={authenticationFail}/>
+                    <LoginWithGoogle authenticationSuccess={authenticationSuccess} authenticationFail={authenticationFail} label="Sign in with Google"/>
                 </Grid>
             </Grid>
             <Grid container>

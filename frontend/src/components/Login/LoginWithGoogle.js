@@ -23,6 +23,7 @@ function LoginWithGoogle(props) {
             render={(renderProps) => 
                     <GoogleButton 
                         style={{width:"100%", marginBottom:"10px"}} 
+                        label={props.label}
                         onClick={renderProps.onClick} 
                         disabled={renderProps.disabled}/>}
             onSuccess={responseSuccessGoogle}

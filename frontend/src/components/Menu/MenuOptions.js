@@ -29,9 +29,7 @@ function MenuOptions(props) {
                 return item.itemName.toLowerCase().includes(value.toLowerCase());
             }));
         }
-    } 
-
-    
+    }
 
     const sortItems = (value) => {
         setSort(value);
@@ -57,11 +55,11 @@ function MenuOptions(props) {
     return (
         <div>
             <Grid container spacing={2} >
-                <Grid item xs={0} sm={0} md={0} lg={4}/>
+                <Grid item xs={0} lg={4}/>
                 <Grid item xs={12} sm={12} md={12} lg={4}>
                     <TextField name='searchQuery' label="Search" type="search" value={searchQuery} onChange={(e) => search(e.target.value)} sx={{ width:"100%", margin:"10px" }}/>
                 </Grid>
-                <Grid item xs={12} sm={12} md={12} lg={2}>
+                <Grid item xs={12} lg={2}>
                     <FormControl fullWidth sx={{ margin:"10px" }}>
                     <InputLabel id="sort">Sort</InputLabel>
                     <Select
@@ -75,6 +73,7 @@ function MenuOptions(props) {
                     </Select>
                     </FormControl>
                 </Grid>
+                {props.children}
             </Grid>
         </div>
     )

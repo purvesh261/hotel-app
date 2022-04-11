@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import LoginWithGoogle from './LoginWithGoogle';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -141,6 +142,9 @@ export default function SignUp() {
                 <Typography component="span" gutterBottom variant="body1" sx={{color:"red"}}>
                   {errorMessage}
                 </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                    <LoginWithGoogle authenticationSuccess={signUpSuccess} authenticationFail={signUpFailure} label="Sign up with Google"/>
               </Grid>
               <Grid item xs={12}>
                 <TextField

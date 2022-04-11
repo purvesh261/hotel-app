@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MenuOptions from '../Menu/MenuOptions';
+import { Grid, Button } from "@mui/material"
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import axios from 'axios';
 import ItemTable from './ItemTable';
 
@@ -7,6 +10,7 @@ function ItemAdmin() {
     const [ items, setItems ] = useState([]);
     const [ tempItems, setTempItems ] = useState([])
     const [ error, setError ] = useState("");
+    const navigate = useNavigate();
 
     const getItems = async () => {
         try
@@ -30,7 +34,11 @@ function ItemAdmin() {
 
     return (
         <div>
-            <MenuOptions allItems={items} items={tempItems} setItems={setTempItems} />
+            <MenuOptions allItems={items} items={tempItems} setItems={setTempItems}>
+                <Grid item xs={12} lg={2}>
+                    <Button variant="contained" sx={{mt:"10px", ml:"20px",height:"70%"}} onClick={() => navigate('/admin/create-item')}><AddCircleIcon></AddCircleIcon> Create Item</Button>
+                </Grid>
+            </MenuOptions>
             {error && <span>{error}</span>}
             <ItemTable rows={tempItems}/>
         </div>

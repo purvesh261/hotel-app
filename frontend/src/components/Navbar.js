@@ -26,6 +26,18 @@ export default function MenuAppBar() {
     setAnchorEl(event.currentTarget);
   };
 
+  const titleClick = () => {
+    if(user)
+    {
+      if(user.admin)
+      {
+        return navigate('/admin')
+      }
+      return navigate('/')
+    }
+    return navigate('/login')
+  }
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -47,7 +59,7 @@ export default function MenuAppBar() {
           >
             <MenuIcon/>
           </IconButton> */}
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, cursor:"pointer" }} onClick={() => navigate("/")} >
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, cursor:"pointer" }} onClick={() => titleClick()} >
             Hotel Menu
           </Typography>
           {user && (

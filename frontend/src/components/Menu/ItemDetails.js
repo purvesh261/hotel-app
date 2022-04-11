@@ -80,7 +80,7 @@ function ItemDetails() {
                         {item.itemName}
                     </Typography>
                     <Typography variant="h6" sx={{mt:"10px"}}>
-                        Price: <span style={{color:"#B12704", fontWeight:"bolder"}}>{"₹ " + item.price + ".00"}</span>
+                        Price: <span style={{color:"#B12704", fontWeight:"bolder"}}>{"₹ " + item.price}</span>
                     </Typography>
                     <Typography variant="h6">
                         Category: {item.category}
