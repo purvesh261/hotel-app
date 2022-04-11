@@ -64,7 +64,7 @@ function ItemDetails() {
                             item.image.map((img, index) => {
                                 return <SwiperSlide key={index} className="swiper-slide">
                                             <div className="swiper-zoom-container">
-                                                <img src={"http://localhost:5000/static/items/" + item._id + "/" + img}></img>
+                                                <img src={"http://localhost:5000/static/items/" + item._id + "/" + img} alt={img}></img>
                                             </div>
                                         </SwiperSlide>
                             })

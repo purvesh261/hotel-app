@@ -4,8 +4,9 @@ import Menu from '../Menu/Menu';
 import CreateItem from '../Admin/CreateItem';
 import ItemAdmin from '../Admin/ItemAdmin';
 import SignUp from '../Login/SignUp';
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { Route, Routes, Navigate, withRouter } from 'react-router-dom';
 import ItemDetails from '../Menu/ItemDetails';
+import jwt_decode from "jwt-decode";
 
 export const ROUTES = [
     { path: '/', key:"MENU", exact:true, element:<Menu />, protected: true, admin: false},
@@ -16,6 +17,14 @@ export const ROUTES = [
     { path: '/admin/create-item', key:"CREATE_ITEM", exact:true, element:<CreateItem />, protected: true, admin: true},
 ]
 
+const parseJwt = (token) => {
+    try {
+        return jwt_decode(token);
+    } catch (e) {
+        return null;
+    }
+};
+
 const ProtectedRoute = ({ adminRoute, children}) => 
 {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -24,6 +33,15 @@ const ProtectedRoute = ({ adminRoute, children}) =>
     {
         return <Navigate to='/login' />
     }
+    else{
+        // logs out if token is expired
+        const decodedJwt = parseJwt(user.accessToken);
+        if (decodedJwt.exp * 1000 < Date.now()) {
+            localStorage.clear();
+            return <Navigate to='/login' />
+        }
+    }
+
     if(adminRoute && !user.admin)
     {
         return <Navigate to='/' />

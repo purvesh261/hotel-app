@@ -154,7 +154,7 @@ function Login() {
               autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              error={emailError || error}
+              error={emailError || error ? true : false}
               autoFocus
             />  
             <TextField
@@ -167,7 +167,7 @@ function Login() {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              error={passwordError || error}
+              error={passwordError || error ? true : false}
               autoComplete="current-password"
             />
             <Button
