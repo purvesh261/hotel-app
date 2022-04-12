@@ -26,7 +26,11 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import AlertSnackbar from '../AlertSnackbar';
-
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { Menu, MenuItem } from '@mui/material';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -148,12 +152,21 @@ function Row(props) {
 export default function ItemTable(props) {
     const [visibleRows, setVisibleRows] = React.useState(props.rows)
     const [page, setPage] = React.useState(0);
-    // const [rowList, setRowList] = React.useState(props.rows)
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+
+
+    const handleClick = (event) => {
+        console.log(event.currentTarget)
+        setAnchorEl(event.currentTarget);
+      };
+      const handleClose = () => {
+        setAnchorEl(null);
+      };
 
     const removeRow = () => {
         props.getItems();
-        // setRowList(props.rows);
     }
 
     const handleChangePage = (event, newPage) => {
@@ -171,6 +184,10 @@ export default function ItemTable(props) {
         setVisibleRows(newRows);
     }
 
+    const openFilter = () => {
+        console.log()
+    }
+
     React.useEffect(() => {
         getVisibleRows();
     }, [page, rowsPerPage, props.rows])
@@ -186,7 +203,8 @@ export default function ItemTable(props) {
                     <TableCell align="right">Price</TableCell>
                     <TableCell align="right">Category</TableCell>
                     <TableCell align="right">Created On</TableCell>
-                    <TableCell align="right">Actions</TableCell>
+                    <TableCell align="right">Actions
+                    </TableCell>
                 </TableRow>
                 </TableHead>
                 <TableBody>

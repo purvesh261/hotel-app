@@ -5,11 +5,13 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { InputLabel } from '@mui/material';
 import { FormControl } from '@mui/material';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+
 const sortOptions = [
     'Price: Low to High',
     'Price: High to Low',
     'Newest',
-    'Oldest'
+    'Oldest',
 ]
 
 function MenuOptions(props) {
@@ -68,7 +70,7 @@ function MenuOptions(props) {
                         onChange={(e) => sortItems(e.target.value)}
                         label="Sort">
                             {sortOptions.map((option) => (
-                                <MenuItem key={option} value={option}>{option}</MenuItem>
+                                <MenuItem key={option} value={option}>{option} </MenuItem>
                             ))}
                     </Select>
                     </FormControl>
