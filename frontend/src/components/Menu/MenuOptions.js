@@ -36,10 +36,10 @@ function MenuOptions(props) {
         switch(value)
         {
             case sortOptions[0]:
-                setItems([ ...items ].sort((a, b) => (a.price > b.price) ? 1 : -1));
+                setItems([ ...items ].sort((a, b) => (Number(a.price) > Number(b.price)) ? 1 : -1));
                 break;
             case sortOptions[1]:
-                setItems([ ...items ].sort((a, b) => (a.price < b.price) ? 1 : -1));
+                setItems([ ...items ].sort((a, b) => (Number(a.price) < Number(b.price)) ? 1 : -1));
                 break;
             case sortOptions[2]:
                 setItems([ ...items ].sort((a, b) => (a.createdOn < b.createdOn) ? 1 : -1));

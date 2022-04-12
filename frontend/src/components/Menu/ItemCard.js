@@ -40,7 +40,7 @@ export default function ItemCard({ item }) {
             {"₹ " + item.price}
           </Typography>
           <Typography variant="body2" noWrap color="text.secondary">
-            {item.description}
+            {item.description || item.category}
           </Typography>
         </CardContent>
       </CardActionArea>
