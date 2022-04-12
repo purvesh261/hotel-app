@@ -1,39 +1,45 @@
 const Item = require('../model/items.model');
 const { validationResult } = require('express-validator');
+const mongoose = require('mongoose');
 var fs = require('fs');
 
 exports.getItems = (req, res) => {
-    Item.find()
+    Item.find({ status: true })
         .then(items => {
             res.send(items)
         })
         .catch(err => {
-            res.sendStatus(500)
+            res.status(500).send("Something went wrong! Try again.")
         })
 }
 
 exports.getItemById = async (req, res) => {
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)) 
+    {
+        return res.status(404).send("Item not found");
+    }
+
     try{
-        const item = await Item.findById(req.params.id)
+        const item = await Item.findById(req.params.id).exec();
         if(!item){
-            return res.status(404).json({"error":"Item not found"});
+            return res.status(404).send("Item not found");
         }
         res.send(item)
     }
     catch(err) {
-        res.sendStatus(500)
+        res.status(500).send("Something went wrong! Try again.")
     }
 
 }
 
-const processImages = async (req, res, item) => {
-    if (req.files) {
-        let image = req.files.image;
+const processImages = async (request, response, item) => {
+    if (request.files) {
+        let image = request.files.image;
         if(!image.length)
         {
-            image = [image]
+            image = [image];
         }
-        var imageArray = []
+        var imageArray = item.image ? item.image : [];
 
         for(let img of image)
         {
@@ -48,23 +54,26 @@ const processImages = async (req, res, item) => {
             }
             catch(err)
             {
-                return res.sendStatus(500)
+                return response.status(500).send("Something went wrong! Try again.")
             }
         }
         item.image = imageArray;
         item.save()
         .then(item => {  
-            res.send(item);
+            response.send(item);
         })
         .catch(err => {
-            return res.status(500);
+            return response.status(500).send("Something went wrong! Try again.")
         })
     }
     else{
-        item.images = null;
+        item.images = [];
         item.save()
         .then(item => {  
-            res.send(item);
+            response.send(item);
+        })
+        .catch(err => {
+            return response.status(500).send("Something went wrong! Try again.")
         })
     }
 }
@@ -78,26 +87,45 @@ exports.createItem = (req, res) => {
     itemBody.price = Number(itemBody.price).toFixed(2);
     let item = new Item(req.body);
     processImages(req, res, item);
-    res.send()
-
 }
 
 exports.updateItem = (req, res) => {
-
-    Item.findByIdAndUpdate(req.params.id, req.body)
+    const updatedItem = req.body;
+    console.log(updatedItem)
+    Item.updateOne({_id: req.params.id} , {$set: { ...updatedItem }})
     .then(item => {
-        if(!item)
+        console.log(item)
+        if(!item.acknowledged)
         {
-            return res.json({"error":"Item doesn't exist."})
+            return res.status(500).send("Something went wrong! Try again.");
         }
         res.send(item);
     })
     .catch(err => {
-        res.json({'error': err});
+        res.status(500).send("Something went wrong! Try again.");
     });
     
 }
 
+exports.uploadImage = async (req, res) => {
+    console.log(req.body)
+    console.log(req.files)
+    if(!mongoose.Types.ObjectId.isValid(req.params.id)) 
+    {
+        return res.status(404).send("Item not found");
+    }
+
+    try{
+        const item = await Item.findById(req.params.id).exec();
+        if(!item){
+            return res.status(404).send("Item not found");
+        }
+        processImages(req, res, item);
+    }
+    catch(err) {
+        res.status(500).send("Something went wrong! Try again.")
+    }
+}
 
 exports.deleteItem = (req, res) => {
 
@@ -105,11 +133,11 @@ exports.deleteItem = (req, res) => {
         .then(item => {
             if(!item)
             {
-                return res.json({"error":"Item doesn't exist."})
+                return res.status(404).send("Item doesn't exist")
             }
             res.send(item);
         })
         .catch(err => {
-            res.json({'error': err});
+            res.status(500).send("Something went wrong! Try again.")
         })
 }

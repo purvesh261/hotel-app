@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Box, Grid, Paper, List, ListItem, IconButton, ListItemIcon, Button, CssBaseline, Container, Typography, FormControlLabel, TextField } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ImageIcon from '@mui/icons-material/Image';
@@ -16,6 +16,37 @@ function CreateItem() {
                                                 image:[]})
     const [alert, setAlert] = useState('');
     const navigate = useNavigate();
+    const { id } = useParams();
+    const [disabled, setDisabled] = useState(false);
+    const [update, setUpdate] = useState(false);
+
+    const getItem = async () => {
+        try
+        {
+            const res = await axios.get(`http://localhost:5000/items/${id}`, {headers: {'Authorization': 'Bearer ' + localStorage.getItem('accessToken')}});
+            
+            var newFormValues = { itemName: res.data.itemName , description: res.data.description, category: res.data.category, price: res.data.price}
+            setFormValues(newFormValues);
+        }
+        catch(err){
+            if (err.response && err.response.data) {
+                if(err.response.status === 404)
+                {
+                    setDisabled(true);
+                }
+                setAlert(err.response.data)
+            }
+        }
+    }
+
+    useEffect(() => {
+        if(id)
+        {
+            setUpdate(true);
+            getItem();
+        }
+        console.log(update)
+    }, [])
 
     var removeImage = (index) => {
         let imageArray = formValues.image;
@@ -49,26 +80,49 @@ function CreateItem() {
         }
     }
 
+    const createItem = async (formData) => {
+        try {
+            await axios.post('http://localhost:5000/items/create', formData,
+                {headers: {'Authorization': 'Bearer ' + localStorage.getItem('accessToken')}})
+            navigate('/admin');
+
+        }
+        catch(err) {
+            setAlert("Something went wrong. Try again later.");
+            setTimeout(() => setAlert(""), 3000);
+        }
+    }
+
+    const updateItem = async () => {
+        try {
+            var res = await axios.put(`http://localhost:5000/items/${id}`, formValues,
+                {headers: {'Authorization': 'Bearer ' + localStorage.getItem('accessToken')}})
+            console.log(res)
+        }
+        catch(err) {
+            setAlert("Something went wrong. Try again later.");
+            setTimeout(() => setAlert(""), 3000);
+        }
+    }
+
     const onSubmitHandler = (event) => {
         event.preventDefault();
-        var formData = new FormData();
-        formData.append('itemName', formValues.itemName);
-        formData.append('description', formValues.description);
-        formData.append('category', formValues.category);
-        formData.append('price', formValues.price);
-        if(formValues.image.length > 0)
+        if(!update)
         {
-            formValues.image.forEach((img) => formData.append('image', img))
+            var formData = new FormData();
+            formData.append('itemName', formValues.itemName);
+            formData.append('description', formValues.description);
+            formData.append('category', formValues.category);
+            formData.append('price', formValues.price);
+            if(formValues.image.length > 0)
+            {
+                formValues.image.forEach((img) => formData.append('image', img))
+            }
+            createItem(formData);
         }
-        axios.post('http://localhost:5000/items/create', formData,
-        {headers: {'Authorization': 'Bearer ' + localStorage.getItem('accessToken')}})
-        .then(res => {
-            navigate('/admin');
-        })
-        .catch(err => {
-            setAlert("Something went wrong. Try again later.")
-            setTimeout(() => setAlert(""), 3000)
-        })
+        else {
+            updateItem();
+        }
     }
     return (
         <div>
@@ -84,7 +138,7 @@ function CreateItem() {
                     }}
                     >
                        <Typography component="h1" variant="h5">
-                            Create Item
+                            { update ? "Edit Item" : "Create Item" }
                         </Typography> 
                         <Box component="form" onSubmit={onSubmitHandler} sx={{ mt: 3 }}>
                             <Grid container spacing={2}>
@@ -97,6 +151,7 @@ function CreateItem() {
                                 <TextField
                                     required
                                     fullWidth
+                                    disabled={disabled}
                                     id="itemName"
                                     label="Item Name"
                                     name="itemName"
@@ -108,6 +163,7 @@ function CreateItem() {
                                 <TextField
                                     fullWidth
                                     multiline
+                                    disabled={disabled}
                                     rows={4}
                                     id="description"
                                     label="Description"
@@ -120,6 +176,7 @@ function CreateItem() {
                                     <TextField
                                         required
                                         fullWidth
+                                        disabled={disabled}
                                         id="category"
                                         label="Category"
                                         name="category"
@@ -131,6 +188,7 @@ function CreateItem() {
                                     <TextField
                                         required
                                         fullWidth
+                                        disabled={disabled}
                                         type="number"
                                         id="price"
                                         label="Price"
@@ -140,6 +198,7 @@ function CreateItem() {
                                         onChange={onChangeHandler}
                                     />
                                 </Grid>
+                                {!update && 
                                 <Grid item xs={12}>
                                     <Paper variant="outlined" sx={{margin:"5px"}}>
                                         <Grid container sx={{padding:"10px"}}>
@@ -177,7 +236,7 @@ function CreateItem() {
                                                                         <ListItemIcon>
                                                                             <ImageIcon/>
                                                                         </ListItemIcon>
-                                                                        {img.name}
+                                                                        {img.name ? img.name : img}
                                                                     </ListItem>
                                                         })}
 
@@ -188,14 +247,15 @@ function CreateItem() {
                                             </Grid>
                                         </Grid>
                                     </Paper>
-                                </Grid>
+                                </Grid>}
                                 <Button
                                 type="submit"
                                 fullWidth
+                                disabled={disabled}
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
                                 >
-                                Create
+                                {update ? "Update" : "Create" }
                                 </Button>
                             </Grid>
                         </Box>

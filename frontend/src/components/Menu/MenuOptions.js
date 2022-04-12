@@ -14,7 +14,7 @@ const sortOptions = [
 
 function MenuOptions(props) {
     const [searchQuery, setSearchQuery] = useState("");
-    const [sort, setSort] = useState();
+    const [sort, setSort] = useState("");
     const { allItems, items, setItems } = props;
 
     const search = (value) => {   

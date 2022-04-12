@@ -38,6 +38,7 @@ function ItemDetails() {
             }
         }
     }
+    
     useEffect(() => {
         getItem();
     }, [])

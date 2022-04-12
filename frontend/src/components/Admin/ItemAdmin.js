@@ -17,6 +17,7 @@ function ItemAdmin() {
         {
             var response = await axios.get('http://localhost:5000/items/',
                 {headers: {'Authorization': 'Bearer ' + localStorage.getItem('accessToken')}});
+            console.log(response)
             setItems(response.data);
             setTempItems(response.data)
         }
@@ -40,7 +41,7 @@ function ItemAdmin() {
                 </Grid>
             </MenuOptions>
             {error && <span>{error}</span>}
-            <ItemTable rows={tempItems}/>
+            <ItemTable rows={tempItems} getItems={getItems}/>
         </div>
     )
 }

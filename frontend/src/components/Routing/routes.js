@@ -9,12 +9,13 @@ import ItemDetails from '../Menu/ItemDetails';
 import jwt_decode from "jwt-decode";
 
 export const ROUTES = [
-    { path: '/', key:"MENU", exact:true, element:<Menu />, protected: true, admin: false},
-    { path: '/items/:id', key:"ITEM", exact:true, element:<ItemDetails />, protected: true, admin: false},
-    { path: '/login', key:"LOGIN", exact:true, element:<Login />, protected: false},
-    { path: '/sign-up', key:"SIGNUP", exact:true, element:<SignUp />, protected: false},
-    { path: '/admin', key:"ADMIN", exact:true, element:<ItemAdmin />, protected: true, admin: true},
-    { path: '/admin/create-item', key:"CREATE_ITEM", exact:true, element:<CreateItem />, protected: true, admin: true},
+    { path: '/', key:"MENU", element:<Menu />, protected: true, admin: false},
+    { path: '/items/:id', key:"ITEM", element:<ItemDetails />, protected: true, admin: false},
+    { path: '/login', key:"LOGIN", element:<Login />, protected: false},
+    { path: '/sign-up', key:"SIGNUP", element:<SignUp />, protected: false},
+    { path: '/admin', key:"ADMIN", element:<ItemAdmin />, protected: true, admin: true},
+    { path: '/admin/create-item', key:"CREATE_ITEM", element:<CreateItem />, protected: true, admin: true},
+    { path: '/admin/edit/:id', key:"UPDATE_ITEM", element:<CreateItem />, protected: true, admin: true},
 ]
 
 const parseJwt = (token) => {
