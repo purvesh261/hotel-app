@@ -50,15 +50,6 @@ export default function MenuAppBar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" enableColorOnDark>
         <Toolbar>
-          {/* <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon/>
-          </IconButton> */}
           <Typography variant="h6" component="span" sx={{ flexGrow: 1, cursor:"pointer" }} onClick={() => titleClick()} >
             Hotel Menu
           </Typography>
@@ -89,7 +80,7 @@ export default function MenuAppBar() {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>{user.email}</MenuItem>
+                <MenuItem onClick={handleClose}>{user.username}</MenuItem>
                 <MenuItem onClick={logout}>Logout</MenuItem>
               </Menu>
             </div>

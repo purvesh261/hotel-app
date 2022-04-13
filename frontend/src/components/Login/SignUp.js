@@ -19,12 +19,14 @@ import axios from 'axios';
 const theme = createTheme();
 
 export default function SignUp() {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
+  const [errorObj, setErrorObj] = useState({username:false, email: false, password: false});
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
 
@@ -44,22 +46,28 @@ export default function SignUp() {
     }, [])
 
   const validateForm = () => {
-    if(email === "" || password === "" || confirmPassword === "")
+    if(username === "" || email === "" || password === "" || confirmPassword === "")
     {
       setErrorMessage("Enter all fields");
       setTimeout(() => setErrorMessage(""), 3000)
       return false;
     }
+    if(!username.match(/^(?=[a-zA-Z0-9._]{4,20}$)(?!.*[_.]{2})[^_.].*[^_.]$/))
+    {
+      setErrorObj({ ...errorObj, username:true});
+      setErrorMessage("Username must be:\n4-20 characters long, can contain letters, numbers, dots and underscore, multiple special characters can't be in a row");
+      return false
+    }
     if(!email.toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/))
     {
-      setEmailError(true);
+      setErrorObj({ ...errorObj, email:true});
       setErrorMessage("Not a valid email");
       setTimeout(() => setErrorMessage(""), 3000)
       return false;
     }
     if(!password.match(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/))
     {
-      setPasswordError(true);
+      setErrorObj({ ...errorObj, password:true});
       setErrorMessage("Not a valid password");
       setTimeout(() => setErrorMessage(""), 3000)
       return false;
@@ -75,38 +83,24 @@ export default function SignUp() {
   }
 
   const signUpSuccess = (res) => {
-    if(res.data.error)
-    {
-        setErrorMessage(res.data.error)
-        setTimeout(() => setErrorMessage(""), 2000)
-    }
-    else
-    {
-        localStorage.setItem('accessToken', res.data.accessToken)
-        localStorage.setItem('user', JSON.stringify(res.data))
-        navigate('/')
-    }
+    localStorage.setItem('accessToken', res.data.accessToken)
+    localStorage.setItem('user', JSON.stringify(res.data))
+    navigate('/')
   }
 
   const signUpFailure = (err) => {
     if (err.response && err.response.data) {
-      if(err.response.data.error)
-      {
-        setErrorMessage(err.response.data.error)
-      }
-      else{
-        setErrorMessage(err.response.data)
-      }
+      setErrorMessage(err.response.data)
     }
   }
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
-    setEmailError(false);
-    setPasswordError(false);
+    setErrorObj({username:false, email: false, password: false});
     if(validateForm())
     {
       let form = {
+        username:username,
         email:email,
         password:password,
         admin:false
@@ -139,12 +133,25 @@ export default function SignUp() {
           <Box component="form" onSubmit={onSubmitHandler} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
+                    <LoginWithGoogle authenticationSuccess={signUpSuccess} authenticationFail={signUpFailure} label="Sign up with Google"/>
+              </Grid>
+              <Grid item xs={12}>
                 <Typography component="span" gutterBottom variant="body1" sx={{color:"red"}}>
                   {errorMessage}
                 </Typography>
               </Grid>
               <Grid item xs={12}>
-                    <LoginWithGoogle authenticationSuccess={signUpSuccess} authenticationFail={signUpFailure} label="Sign up with Google"/>
+                <TextField
+                  required
+                  fullWidth
+                  id="username"
+                  label="Username"
+                  name="username"
+                  autoComplete="username"
+                  value={username}
+                  error={errorObj.username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -155,7 +162,7 @@ export default function SignUp() {
                   name="email"
                   autoComplete="email"
                   value={email}
-                  error={emailError}
+                  error={errorObj.email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </Grid>
@@ -169,7 +176,7 @@ export default function SignUp() {
                   id="password"
                   autoComplete="new-password"
                   value={password}
-                  error={passwordError}
+                  error={errorObj.password}
                   onChange={(e) => setPassword(e.target.value)}
 
                 />
@@ -188,7 +195,7 @@ export default function SignUp() {
                   id="confirmPassword"
                   autoComplete="new-password"
                   value={confirmPassword}
-                  error={passwordError}
+                  error={errorObj.password}
                   onChange={(e) => setConfirmPassword(e.target.value)}
 
                 />

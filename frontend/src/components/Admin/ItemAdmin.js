@@ -15,13 +15,15 @@ function ItemAdmin() {
     const [ tempItems, setTempItems ] = useState([])
     const [ error, setError ] = useState("");
     const navigate = useNavigate();
+    const [reSort, setReSort] = useState(false);
 
     const getItems = async () => {
         try
         {
             var response = await axios.get('http://localhost:5000/items/',
                 {headers: {'Authorization': 'Bearer ' + localStorage.getItem('accessToken')}});
-            console.log(response)
+            var items = response.data;
+            items = items.sort((a, b) => (a.itemName.toLowerCase() > b.itemName.toLowerCase()) ? 1 : -1);
             setItems(response.data);
             setTempItems(response.data)
         }
@@ -39,7 +41,7 @@ function ItemAdmin() {
 
     return (
         <div>
-            <MenuOptions allItems={items} items={tempItems} setItems={setTempItems}>
+            <MenuOptions allItems={items} items={tempItems} setItems={setTempItems} reSort={reSort}>
                 <Grid item xs={12} lg={2}>
                     <Stack>
                         <Button variant="contained" sx={{mt:"10px", ml:"20px",height:"70%"}} onClick={() => setOpenFilter(true)} ><FilterListIcon /> Filter</Button>
@@ -49,7 +51,7 @@ function ItemAdmin() {
             </MenuOptions>
             {error && <span>{error}</span>}
             <ItemTable rows={tempItems} getItems={getItems}/>
-            <Filters openFilter={openFilter} setOpenFilter={setOpenFilter} tempItems={tempItems} setTempItems={setTempItems} allItems={items}/>
+            <Filters openFilter={openFilter} setOpenFilter={setOpenFilter} tempItems={tempItems} setTempItems={setTempItems} reSort={reSort} setReSort={setReSort} allItems={items}/>
         </div>
     )
 }

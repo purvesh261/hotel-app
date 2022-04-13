@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Box, Typography, Grid } from '@mui/material';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import {Navigation, Pagination, Zoom } from 'swiper';
+import { Navigation, Pagination, Zoom } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -24,6 +24,7 @@ function ItemDetails() {
     const [error, setError] = useState("");
     const { id } = useParams();
     const user = JSON.parse(localStorage.getItem('user'));
+    const navigate = useNavigate();
 
     const getItem = async () => {
         try
@@ -34,6 +35,10 @@ function ItemDetails() {
         }
         catch(err){
             if (err.response && err.response.data) {
+                if(err.response.status === 404)
+                {
+                    navigate("/not-found")
+                }
                 setError(err.response.data)
             }
         }
@@ -44,6 +49,11 @@ function ItemDetails() {
     }, [])
     return (
         <Box>
+            {error && 
+                <Typography variant="h3" sx={{color:"red"}}>
+                    {error}
+                </Typography>
+            }
             {item && 
             <>
             <Grid container sx={{mt:"30px"}}>

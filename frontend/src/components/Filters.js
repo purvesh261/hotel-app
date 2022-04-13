@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Button, Box } from "@mui/material";
+import { Button, Box } from "@mui/material";
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import PropTypes from 'prop-types';
@@ -64,7 +64,7 @@ function a11yProps(index) {
 
   
 function Filters(props) {
-    const [value, setValue] = useState(0);
+    const [tabValue, setTabValue] = useState(0);
     const [totalPriceRange, setTotalPriceRange] = useState([0, 300]);
     const [priceRange, setPriceRange] = useState([0, 300]);
     const [categories, setCategories] = useState([]);
@@ -75,35 +75,28 @@ function Filters(props) {
     const [beforeDate, setBeforeDate] = useState(initialBeforeDate);
 
     const setInitialSlider = () => {
-        if(props.allItems.length > 0)
+        if(props.allItems.length)
         {
-            let min = props.allItems[0].price;
-            let max = props.allItems[0].price;
-            for(let i = 0; i < props.tempItems.length; i++)
+            let max = Number(props.allItems[0].price);
+            for(let i = 0; i < props.allItems.length; i++)
             {
-                if(Number(props.allItems[i].price) < min )
-                {
-                    min = Number(props.allItems[i].price);
-                }
-                if(props.tempItems[i].price > max)
+                if(Number(props.allItems[i].price) > max)
                 {
                     max = Number(props.allItems[i].price);
                 }
             }
-            setTotalPriceRange([min, max]);
-            setPriceRange([min, max]);
-            console.log(min, max)
+            setTotalPriceRange([0, max]);
+            setPriceRange([0, max]);
         }
     }
 
     useEffect(() => {
-        // setInitialSlider();
+        setInitialSlider();
         // find all the unique categories
         var categoriesArray = [ ...new Set(props.allItems.map((item) => item.category))]
         setCategories(categoriesArray);
         var categoriesObj = {};
         categoriesArray.map((category) => categoriesObj[category] = true)
-        console.log(categoriesObj)
         setActiveCategories(categoriesObj);
     }, [props.allItems])
 
@@ -111,14 +104,13 @@ function Filters(props) {
         setPriceRange(newValue);
     };
 
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
+    const handleTabChange = (event, newValue) => {
+        setTabValue(newValue);
     };
 
-    const onChangeHandler = (event) => {
+    const onCategoryChange = (event) => {
         var { name, checked } = event.target;
         setActiveCategories({ ...activeCategories, [name]: checked});
-        console.log(activeCategories);
     }
 
     const applyFilters = () => {
@@ -133,15 +125,15 @@ function Filters(props) {
             return activeCategories[item.category];
         })
 
-        // conso    
         // filter date
         newTempItems = newTempItems.filter((item) => {
             let itemDate = new Date(item.createdOn)
-            console.log(item.itemName, itemDate >= afterDate && itemDate <= beforeDate)
             return (itemDate >= afterDate && itemDate <= beforeDate);
         })
 
+        // set the filtered data and sort it
         props.setTempItems(newTempItems);
+        props.setReSort(!props.reSort);
         props.setOpenFilter(false);
     };
 
@@ -153,6 +145,7 @@ function Filters(props) {
         setAfterDate(initialAfterDate);
         setBeforeDate(initialBeforeDate);
         props.setTempItems(props.allItems);
+        props.setReSort(!props.reSort);
         props.setOpenFilter(false);
     }
 
@@ -169,13 +162,13 @@ function Filters(props) {
             </Typography>
             <Box sx={{ width: '100%' }}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                    <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                    <Tabs value={tabValue} onChange={handleTabChange} aria-label="basic tabs example">
                     <Tab label="Price" {...a11yProps(0)} />
                     <Tab label="Category" {...a11yProps(1)} />
                     <Tab label="Date" {...a11yProps(2)} />
                     </Tabs>
                 </Box>
-                <TabPanel value={value} index={0}>
+                <TabPanel value={tabValue} index={0}>
                     <Box sx={{ width: 300 }}>
                         Set price range:
                         <Slider
@@ -193,15 +186,15 @@ function Filters(props) {
                         </Box>
                     </Box>
                 </TabPanel>
-                <TabPanel value={value} index={1}>
+                <TabPanel value={tabValue} index={1}>
                 <FormGroup>
                     { categories && categories.map((category, index) => {
-                        return <FormControlLabel control={<Checkbox checked={activeCategories[category]} />} onChange={onChangeHandler} name={category} label={category} />
+                        return <FormControlLabel key={index} control={<Checkbox checked={activeCategories[category]} />} onChange={onCategoryChange} name={category} label={category} />
                     })}                    
                 </FormGroup>
 
                 </TabPanel>
-                <TabPanel value={value} index={2}>
+                <TabPanel value={tabValue} index={2}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DesktopDatePicker
                             label="After"

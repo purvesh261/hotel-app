@@ -10,8 +10,8 @@ import Filters from '../Filters';
 
 const buttonStyle = theme => ({
     mt:"10px",
-    height:"70%",
-    [theme.breakpoints.down('md')]: {
+    height:"50%",
+    [theme.breakpoints.down('sm')]: {
         ml:"20px",
         mb:"20px",
         mt:"0px",
@@ -28,6 +28,8 @@ function Menu() {
     const [openFilter, setOpenFilter] = useState(false);
     const [page, setPage] = useState(1);
     const [error, setError] = useState('');
+    const [reSort, setReSort] = useState(false);
+
     const CARDS_PER_PAGE = 12;
 
     const onPageChange = (event, newPage) => {
@@ -53,6 +55,7 @@ function Menu() {
                     item.displayImage = defaultImage;
                 }
             });
+            items = items.sort((a, b) => (a.itemName.toLowerCase() > b.itemName.toLowerCase()) ? 1 : -1);
             setMenuItems(items);
             setTempItems(items);
             
@@ -109,7 +112,15 @@ function Menu() {
                         </Grid>
 
                     }
-        <Filters openFilter={openFilter} setOpenFilter={setOpenFilter} tempItems={tempItems} setTempItems={setTempItems} allItems={menuItems}/>
+        <Filters 
+            openFilter={openFilter}
+            setOpenFilter={setOpenFilter}
+            tempItems={tempItems} 
+            setTempItems={setTempItems} 
+            allItems={menuItems} 
+            reSort={reSort} 
+            setReSort={setReSort}
+        />
     </div>
     )
 }

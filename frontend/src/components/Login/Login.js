@@ -19,10 +19,10 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 const theme = createTheme();
 
 function Login() {
-    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-    const [emailError, setEmailError] = useState(false);
+    const [usernameError, setUsernameError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
     const navigate = useNavigate();
     const user = JSON.parse(localStorage.getItem('user'));
@@ -36,38 +36,20 @@ function Login() {
     }, [])
 
     const validateCredentials = () => {
-      if(email === "")
+      var validUsername = true, validPassword = true;
+      if(username === "")
       {
-        setEmailError(true)
+        setUsernameError(true)
+        validUsername = false;
       }
 
       if(password === "")
       {
-        setPasswordError(true)
-      }
-      
-      let validEmail = email.toLowerCase()
-        .match(
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        );
-      console.log(validEmail,"u")
-
-      if(!validEmail)
-      {
-        setEmailError(true)
+        setPasswordError(true);
+        validPassword = false;
       }
 
-      let validPassword = password
-        .match(
-          /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/
-        );
-
-      if(!validPassword)
-      {
-        setPasswordError(true)
-      }
-
-      return validEmail && validPassword;
+      return validUsername && validPassword;
 
     };
 
@@ -84,38 +66,25 @@ function Login() {
     }
 
     const authenticationSuccess = (res) => {
-        if(res.data.error)
-        {
-            setError(res.data.error)
-            setTimeout(() => setError(""), 2000)
-        }
-        else
-        {
-            localStorage.setItem('accessToken', res.data.accessToken)
-            localStorage.setItem('user', JSON.stringify(res.data))
-            redirectUser(res.data.admin);
-        }
+      console.log(res)
+      localStorage.setItem('accessToken', res.data.accessToken)
+      localStorage.setItem('user', JSON.stringify(res.data))
+      redirectUser(res.data.admin);
     }
 
     const authenticationFail = (err) => {
-        if (err.response && err.response.data) {
-            if(err.response.data.error)
-            {
-                setError(err.response.data.error)
-            }
-            else{
-                setError(err.response.data)
-            }
-        }
+      if (err.response && err.response.data) {
+        setError(err.response.data);
+      }
     }
 
     const onSubmitHandler = (event) => {
         event.preventDefault();
-        setEmailError(false);
+        setUsernameError(false);
         setPasswordError(false);
         if(validateCredentials())
         {
-          axios.post('http://localhost:5000/users/authenticate', { email, password })
+          axios.post('http://localhost:5000/users/authenticate', { username, password })
             .then(res => authenticationSuccess(res))
             .catch(err => authenticationFail(err))
         }
@@ -148,13 +117,13 @@ function Login() {
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              error={emailError || error ? true : false}
+              id="username"
+              label="Username"
+              name="username"
+              autoComplete="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              error={usernameError || error ? true : false}
               autoFocus
             />  
             <TextField
@@ -168,7 +137,7 @@ function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               error={passwordError || error ? true : false}
-              autoComplete="current-password"
+              autoComplete="password"
             />
             <Button
               type="submit"
@@ -180,7 +149,11 @@ function Login() {
             </Button>
             <Grid container>
                 <Grid item xs={12}>
-                    <LoginWithGoogle authenticationSuccess={authenticationSuccess} authenticationFail={authenticationFail} label="Sign in with Google"/>
+                    <LoginWithGoogle 
+                      authenticationSuccess={authenticationSuccess} 
+                      authenticationFail={authenticationFail} 
+                      label="Sign in with Google"
+                      setError={setError}/>
                 </Grid>
             </Grid>
             <Grid container>

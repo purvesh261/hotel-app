@@ -4,6 +4,7 @@ import Menu from '../Menu/Menu';
 import CreateItem from '../Admin/CreateItem';
 import ItemAdmin from '../Admin/ItemAdmin';
 import SignUp from '../Login/SignUp';
+import Page404 from '../Page404';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import ItemDetails from '../Menu/ItemDetails';
 import jwt_decode from "jwt-decode";
@@ -75,7 +76,7 @@ export function RenderRouter({ routes }) {
             {routes.map(route => {
                 return renderRoute(route);
             })}
-            <Route path="/*" element={<h1>Page Not Found!</h1>} />
+            <Route path="/*" element={<Page404 />} />
         </Routes>
     );
   }

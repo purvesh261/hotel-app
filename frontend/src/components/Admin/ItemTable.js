@@ -26,11 +26,6 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import AlertSnackbar from '../AlertSnackbar';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Menu, MenuItem } from '@mui/material';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -153,18 +148,7 @@ export default function ItemTable(props) {
     const [visibleRows, setVisibleRows] = React.useState(props.rows)
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const open = Boolean(anchorEl);
-
-
-    const handleClick = (event) => {
-        console.log(event.currentTarget)
-        setAnchorEl(event.currentTarget);
-      };
-      const handleClose = () => {
-        setAnchorEl(null);
-      };
-
+    
     const removeRow = () => {
         props.getItems();
     }
@@ -182,10 +166,6 @@ export default function ItemTable(props) {
         let start = page * rowsPerPage;
         let newRows = props.rows.slice(start, start + rowsPerPage);
         setVisibleRows(newRows);
-    }
-
-    const openFilter = () => {
-        console.log()
     }
 
     React.useEffect(() => {

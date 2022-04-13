@@ -1,6 +1,6 @@
 import React from 'react';
 import GoogleLogin from 'react-google-login';
-import GoogleButton from 'react-google-button'
+import GoogleButton from 'react-google-button';
 import axios from 'axios';
 
 function LoginWithGoogle(props) {
@@ -11,7 +11,7 @@ function LoginWithGoogle(props) {
     }
 
     const responseFailureGoogle = (response) => {
-        console.log(response);
+        props.setError("Something went wrong. Try again.")
     }
 
     return (

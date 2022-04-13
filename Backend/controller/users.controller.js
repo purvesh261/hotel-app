@@ -4,8 +4,8 @@ const bcrypt = require('bcrypt');
 const { validationResult } = require('express-validator');
 const { generateAccessToken } = require('./authorization.js')
 const {OAuth2Client} = require('google-auth-library');
-
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
+const error500msg = "Something went wrong! Try again.";
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 
 exports.getUsers = async (req, res) => {
     try{
@@ -13,20 +13,21 @@ exports.getUsers = async (req, res) => {
         res.send(users);
     }
     catch(err){
-        return res.sendStatus(500);
+        return res.status(500).send(error500msg);
     }
 }
 
 exports.authenticate = (req, res) => {
+    // return validation errors if any
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({error: "Invalid Input"});
+      return res.status(400).send("Invalid Username");
     }
 
-    User.findOne({email: req.body.email})
+    User.findOne({username: req.body.username})
         .then(user => {
             if (!user) {
-                return res.json({"error": "User not found"});
+                return res.status(404).send("User not found");
             }
 
             if (bcrypt.compareSync(req.body.password, user.password)) {
@@ -34,26 +35,27 @@ exports.authenticate = (req, res) => {
                 res.json(responseData);
             }
             else {
-                res.json({"error": "Invalid password"});
+                res.status(400).send("Wrong password");
             }
         })
         .catch(err => {
-            return res.sendStatus(500);
+            return res.status(500).send(error500msg);
         });
 }
 
 exports.createUser = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+        console.log(errors)
+      return res.status(400).send("Validation error");
     }
 
     try
     {
-        const userExists = await User.findOne({email: req.body.email})
+        const userExists = await User.findOne({username: req.body.username})
         if(userExists)
         {
-            return res.json({"error":"User already exists"});
+            return res.status(400).send("Username already exists");
         }
         const newUser = req.body;
         newUser.password = bcrypt.hashSync(newUser.password, 10);
@@ -64,7 +66,8 @@ exports.createUser = async (req, res) => {
     }
     catch(err)
     {
-        return res.sendStatus(500);
+        console.log(err);
+        return res.status(500).send(error500msg);
     }
 }
 
@@ -75,12 +78,12 @@ exports.updateUser = (req, res) => {
         .then(user => {
             if(!user)
             {
-                return res.json({"error":"User doesn't exist"})
+                return res.status(404).send("User not found");
             }
             res.send(user);
         })
         .catch(err => {
-            res.sendStatus(500);
+            res.status(500).send(error500msg);
         });
     }
     else
@@ -96,12 +99,12 @@ exports.deleteUser = (req, res) => {
         .then(user => {
             if(!user)
             {
-                return res.json({"error":"User doesn't exist"})
+                return res.status(404).send("User not found");
             }
             res.send(user);
         })
         .catch(err => {
-            res.sendStatus(500);
+            res.status(500).send(error500msg);
         });
     }
     else
@@ -123,28 +126,33 @@ const generateRandomPassword = () => {
 
 exports.googleLogin = async (req, res) => {
     const {tokenId} = req.body;
-    client.verifyIdToken({ idToken: tokenId, audience:process.env.GOOGLE_CLIENT_ID})
+    //  verify token with Google oauth client
+    googleClient.verifyIdToken({ idToken: tokenId, audience:process.env.GOOGLE_CLIENT_ID})
         .then(async (response) => {
-            const { email } = response.payload;
+            console.log(response, "RESPONSE");
+            const { given_name, email } = response.payload;
             try {
                 var user = await User.findOne({email})
+                // if user exists in database generate access token else add user in database
                 if(user)
                 {
                     var sendData = generateAccessToken(user);
                     return res.send(sendData);
                 }
-                var password = generateRandomPassword()
-                var newUser = new User({ email, password , admin:false});
+                // generate username and password
+                var username = given_name.toLowerCase() + (Math.floor(Math.random()*90000) + 10000).toString();
+                var password = generateRandomPassword();
+                var newUser = new User({ username, email, password , admin:false});
                 var data = await newUser.save();
                 var sendData = generateAccessToken(data);
                 res.send(sendData);
             }
             catch(err)
             {
-                return res.sendStatus(500)
+                return res.status(500).send(error500msg)
             }
         })
         .catch(err => {
-            return res.sendStatus(500)
+            return res.status(500).send(error500msg)
         })
 }
