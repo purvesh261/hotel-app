@@ -30,7 +30,7 @@ exports.getWrittenReviewsByItemId = async (req, res) => {
     try{
         var reviews = await Review
                             .find({item: req.params.id, review: {"$ne": ""}})
-                            .populate("user", "username")
+                            .populate("user", "name")
         res.send(reviews);
     }
     catch(err){

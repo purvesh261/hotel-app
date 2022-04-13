@@ -135,8 +135,8 @@ function ItemReviews(props) {
                                 if(review.user._id != user._id){
                                     return <div>
                                         <Box key={index}>
-                                            <Typography variant="h6">{review.user.username}</Typography>
-                                            <Rating name={review.user.username} value={Number(review.rating)} readOnly />
+                                            <Typography variant="h6">{review.user.name}</Typography>
+                                            <Rating name={review.user.name} value={Number(review.rating)} readOnly />
                                             <Typography variant="body1" sx={{width:"50%"}}>{review.review}</Typography>
                                         </Box>
                                         <Divider />

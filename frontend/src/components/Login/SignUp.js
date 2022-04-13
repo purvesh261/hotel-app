@@ -19,14 +19,12 @@ import axios from 'axios';
 const theme = createTheme();
 
 export default function SignUp() {
-  const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [emailError, setEmailError] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
-  const [errorObj, setErrorObj] = useState({username:false, email: false, password: false});
+  const [errorObj, setErrorObj] = useState({name:false, email: false, password: false});
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
 
@@ -46,16 +44,16 @@ export default function SignUp() {
     }, [])
 
   const validateForm = () => {
-    if(username === "" || email === "" || password === "" || confirmPassword === "")
+    if(name === "" || email === "" || password === "" || confirmPassword === "")
     {
       setErrorMessage("Enter all fields");
       setTimeout(() => setErrorMessage(""), 3000)
       return false;
     }
-    if(!username.match(/^(?=[a-zA-Z0-9._]{4,20}$)(?!.*[_.]{2})[^_.].*[^_.]$/))
+    if(!name.match(/^[a-zA-Z ]*$/))
     {
-      setErrorObj({ ...errorObj, username:true});
-      setErrorMessage("Username must be:\n4-20 characters long, can contain letters, numbers, dots and underscore, multiple special characters can't be in a row");
+      setErrorObj({ ...errorObj, name:true});
+      setErrorMessage("Not a valid name");
       return false
     }
     if(!email.toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/))
@@ -74,7 +72,7 @@ export default function SignUp() {
     }
     if(password != confirmPassword)
     {
-      setPasswordError(true)
+      setErrorObj({ ...errorObj, password:true});
       setErrorMessage("Passwords do not match");
       setTimeout(() => setErrorMessage(""), 3000)
       return false;
@@ -96,11 +94,11 @@ export default function SignUp() {
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
-    setErrorObj({username:false, email: false, password: false});
+    setErrorObj({name:false, email: false, password: false});
     if(validateForm())
     {
       let form = {
-        username:username,
+        name:name,
         email:email,
         password:password,
         admin:false
@@ -144,13 +142,13 @@ export default function SignUp() {
                 <TextField
                   required
                   fullWidth
-                  id="username"
-                  label="Username"
-                  name="username"
-                  autoComplete="username"
-                  value={username}
-                  error={errorObj.username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  id="name"
+                  label="Name"
+                  name="name"
+                  autoComplete="name"
+                  value={name}
+                  error={errorObj.name}
+                  onChange={(e) => setName(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>

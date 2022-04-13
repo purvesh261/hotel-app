@@ -13,7 +13,7 @@ exports.authenticate = (req, res) => {
         console.log(errors)
       return res.status(400).send("Invalid email");
     }
-    
+
     User.findOne({email: req.body.email})
         .then(user => {
             if (!user) {
@@ -42,10 +42,10 @@ exports.createUser = async (req, res) => {
 
     try
     {
-        const userExists = await User.findOne({username: req.body.username})
+        const userExists = await User.findOne({email: req.body.email})
         if(userExists)
         {
-            return res.status(400).send("Username already exists");
+            return res.status(400).send("User with this email already exists");
         }
         const newUser = req.body;
         newUser.password = bcrypt.hashSync(newUser.password, 10);
@@ -56,6 +56,7 @@ exports.createUser = async (req, res) => {
     }
     catch(err)
     {
+        console.log(err)
         return res.status(500).send(error500msg);
     }
 }
@@ -77,7 +78,7 @@ exports.googleLogin = async (req, res) => {
     googleClient.verifyIdToken({ idToken: tokenId, audience:process.env.GOOGLE_CLIENT_ID})
         .then(async (response) => {
             console.log(response, "RESPONSE");
-            const { given_name, email } = response.payload;
+            const { name, email } = response.payload;
             try {
                 var user = await User.findOne({email})
                 // if user exists in database generate access token else add user in database
@@ -86,10 +87,9 @@ exports.googleLogin = async (req, res) => {
                     var sendData = generateAccessToken(user);
                     return res.send(sendData);
                 }
-                // generate username and password
-                var username = given_name.toLowerCase() + (Math.floor(Math.random()*90000) + 10000).toString();
+                // set name and password
                 var password = generateRandomPassword();
-                var newUser = new User({ username, email, password , admin:false});
+                var newUser = new User({ name, email, password , admin:false});
                 var data = await newUser.save();
                 var sendData = generateAccessToken(data);
                 res.send(sendData);
