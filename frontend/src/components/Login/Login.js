@@ -19,10 +19,10 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 const theme = createTheme();
 
 function Login() {
-    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-    const [usernameError, setUsernameError] = useState(false);
+    const [emailError, setEmailError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
     const navigate = useNavigate();
     const user = JSON.parse(localStorage.getItem('user'));
@@ -36,11 +36,11 @@ function Login() {
     }, [])
 
     const validateCredentials = () => {
-      var validUsername = true, validPassword = true;
-      if(username === "")
+      var validEmail = true, validPassword = true;
+      if(email === "")
       {
-        setUsernameError(true)
-        validUsername = false;
+        setEmailError(true)
+        validEmail = false;
       }
 
       if(password === "")
@@ -49,7 +49,7 @@ function Login() {
         validPassword = false;
       }
 
-      return validUsername && validPassword;
+      return validEmail && validPassword;
 
     };
 
@@ -80,11 +80,11 @@ function Login() {
 
     const onSubmitHandler = (event) => {
         event.preventDefault();
-        setUsernameError(false);
+        setEmailError(false);
         setPasswordError(false);
         if(validateCredentials())
         {
-          axios.post('http://localhost:5000/users/authenticate', { username, password })
+          axios.post('http://localhost:5000/users/authenticate', { email, password })
             .then(res => authenticationSuccess(res))
             .catch(err => authenticationFail(err))
         }
@@ -117,13 +117,13 @@ function Login() {
               margin="normal"
               required
               fullWidth
-              id="username"
-              label="Username"
-              name="username"
-              autoComplete="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              error={usernameError || error ? true : false}
+              id="email"
+              label="Email"
+              name="email"
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              error={emailError || error ? true : false}
               autoFocus
             />  
             <TextField

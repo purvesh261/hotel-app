@@ -1,11 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { body } = require('express-validator');
-const controller = require('../controller/users.controller')
-const { authenticateToken } = require('../controller/authorization.js')
+const controller = require('../controller/users.controller');
 
 router.post('/auth/google', controller.googleLogin);
-router.post('/authenticate', controller.authenticate);
+router.post('/authenticate', body('email').isEmail(), controller.authenticate);
 router.post('/create',
         body('username').matches('^(?=[a-zA-Z0-9._]{4,20}$)(?!.*[_.]{2})[^_.].*[^_.]$'),
         body('email').isEmail(),

@@ -8,7 +8,13 @@ const error500msg = "Something went wrong! Try again.";
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 
 exports.authenticate = (req, res) => {
-    User.findOne({username: req.body.username})
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        console.log(errors)
+      return res.status(400).send("Invalid email");
+    }
+    
+    User.findOne({email: req.body.email})
         .then(user => {
             if (!user) {
                 return res.status(404).send("User not found");
