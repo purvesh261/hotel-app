@@ -13,7 +13,7 @@ function CreateItem() {
                                                 description:'',
                                                 category:'',
                                                 price:'',
-                                                image:[]})
+                                                image:[]});
     const [alert, setAlert] = useState('');
     const navigate = useNavigate();
     const { id } = useParams();
@@ -45,7 +45,6 @@ function CreateItem() {
             setUpdate(true);
             getItem();
         }
-        console.log(update)
     }, [])
 
     var removeImage = (index) => {
@@ -88,20 +87,24 @@ function CreateItem() {
 
         }
         catch(err) {
-            setAlert("Something went wrong. Try again later.");
-            setTimeout(() => setAlert(""), 3000);
+            if (err.response && err.response.data) {
+                setAlert(err.response.data);
+                setTimeout(() => setAlert(""), 3000);
+            }
         }
     }
 
     const updateItem = async () => {
         try {
-            var res = await axios.put(`http://localhost:5000/items/${id}`, formValues,
+            await axios.put(`http://localhost:5000/items/${id}`, formValues,
                 {headers: {'Authorization': 'Bearer ' + localStorage.getItem('accessToken')}})
-            console.log(res)
+            navigate('/admin');
         }
         catch(err) {
-            setAlert("Something went wrong. Try again later.");
-            setTimeout(() => setAlert(""), 3000);
+            if (err.response && err.response.data) {
+                setAlert(err.response.data);
+                setTimeout(() => setAlert(""), 3000);
+            }
         }
     }
 

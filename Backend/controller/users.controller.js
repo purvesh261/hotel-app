@@ -7,23 +7,7 @@ const {OAuth2Client} = require('google-auth-library');
 const error500msg = "Something went wrong! Try again.";
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 
-exports.getUsers = async (req, res) => {
-    try{
-        const users = await User.find()
-        res.send(users);
-    }
-    catch(err){
-        return res.status(500).send(error500msg);
-    }
-}
-
 exports.authenticate = (req, res) => {
-    // return validation errors if any
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).send("Invalid Username");
-    }
-
     User.findOne({username: req.body.username})
         .then(user => {
             if (!user) {
@@ -66,50 +50,7 @@ exports.createUser = async (req, res) => {
     }
     catch(err)
     {
-        console.log(err);
         return res.status(500).send(error500msg);
-    }
-}
-
-exports.updateUser = (req, res) => {
-    if(req.user.id === req.params.id || req.user.admin)
-    {
-        User.findByIdAndUpdate(req.params.id, req.body)
-        .then(user => {
-            if(!user)
-            {
-                return res.status(404).send("User not found");
-            }
-            res.send(user);
-        })
-        .catch(err => {
-            res.status(500).send(error500msg);
-        });
-    }
-    else
-    {
-        res.sendStatus(403);
-    }
-}
-
-exports.deleteUser = (req, res) => {
-    if(req.user.id === req.params.id || req.user.admin)
-    {
-        User.findByIdAndRemove(req.params.id)
-        .then(user => {
-            if(!user)
-            {
-                return res.status(404).send("User not found");
-            }
-            res.send(user);
-        })
-        .catch(err => {
-            res.status(500).send(error500msg);
-        });
-    }
-    else
-    {
-        res.sendStatus(403);
     }
 }
 

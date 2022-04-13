@@ -129,16 +129,15 @@ exports.uploadImage = async (req, res) => {
 }
 
 exports.deleteItem = (req, res) => {
-
-    Item.findByIdAndDelete(req.params.id)
-        .then(item => {
-            if(!item)
+    Item.updateOne({_id: req.params.id} , {$set: { status: false }})
+        .then(result => {
+            if(!result.acknowledged)
             {
-                return res.status(404).send(error404msg);
+                return res.status(500).send(error500msg);
             }
-            res.send(item);
+            res.send(result);
         })
         .catch(err => {
             res.status(500).send(error500msg);
-        })
+        });
 }

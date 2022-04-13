@@ -51,7 +51,7 @@ function Row(props) {
     
     const deleteItem = async () => {
         try{
-            var res = await axios.put(`http://localhost:5000/items/${row._id}`, { status: false },
+            var res = await axios.delete(`http://localhost:5000/items/${row._id}`,
                 {headers: {'Authorization': 'Bearer ' + localStorage.getItem('accessToken')}})
             setOpenDialog(false);
             setOpenSnackbar(true);
@@ -61,7 +61,7 @@ function Row(props) {
         catch(err) {
             if (err.response && err.response.data) {
                 setOpenSnackbar(true);
-                setSnackbar({severity:"error", message:"err.response.data"});
+                setSnackbar({severity:"error", message:err.response.data});
             }
         }
     }
