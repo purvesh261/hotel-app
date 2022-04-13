@@ -8,6 +8,7 @@ const fileUpload = require('express-fileupload');
 const cors = require('cors');
 const users = require('./routes/users.routes');
 const items = require('./routes/items.routes');
+const reviews = require('./routes/reviews.routes')
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use('/static', express.static('public'))
 app.use(fileUpload());
 app.use('/users', users);
 app.use('/items', items);
+app.use('/reviews', reviews);
 
 mongoose
     .connect(config.mongoURL)

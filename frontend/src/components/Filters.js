@@ -19,6 +19,10 @@ function valuetext(value) {
     return `${"₹ " + value}`;
   }
 
+function ratingValuetext(value) {
+return `${value}`;
+}
+
 const style = {
     position: 'absolute',
     top: '50%',
@@ -67,6 +71,7 @@ function Filters(props) {
     const [tabValue, setTabValue] = useState(0);
     const [totalPriceRange, setTotalPriceRange] = useState([0, 300]);
     const [priceRange, setPriceRange] = useState([0, 300]);
+    const [ratingRange, setRatingRange] = useState([0, 5]);
     const [categories, setCategories] = useState([]);
     const [activeCategories, setActiveCategories] = useState({});
     const initialAfterDate = new Date('2022-01-01');
@@ -104,9 +109,12 @@ function Filters(props) {
         setPriceRange(newValue);
     };
 
+    const handleRatingChange = (event, newValue) => {
+        setRatingRange(newValue)
+    }
     const handleTabChange = (event, newValue) => {
         setTabValue(newValue);
-    };
+    };  
 
     const onCategoryChange = (event) => {
         var { name, checked } = event.target;
@@ -114,21 +122,16 @@ function Filters(props) {
     }
 
     const applyFilters = () => {
-        // filter price
         var { allItems } = props;
+
         var newTempItems = allItems.filter((item) => {
-            return Number(item.price) >= priceRange[0] && Number(item.price) <= priceRange[1]
-        })
+            var filterPrice = Number(item.price) >= priceRange[0] && Number(item.price) <= priceRange[1];
+            var filterCategory = activeCategories[item.category];
+            var itemDate = new Date(item.createdOn);
+            var filterDate = itemDate >= afterDate && itemDate <= beforeDate;
+            var filterRating = Number(item.averageRating) >= ratingRange[0] && Number(item.averageRating) <= ratingRange[1];
 
-        //  filter categories
-        newTempItems = newTempItems.filter((item) => {
-            return activeCategories[item.category];
-        })
-
-        // filter date
-        newTempItems = newTempItems.filter((item) => {
-            let itemDate = new Date(item.createdOn)
-            return (itemDate >= afterDate && itemDate <= beforeDate);
+            return filterPrice && filterCategory && filterDate && filterRating;
         })
 
         // set the filtered data and sort it
@@ -144,6 +147,7 @@ function Filters(props) {
         setActiveCategories({ ...categoriesObj });
         setAfterDate(initialAfterDate);
         setBeforeDate(initialBeforeDate);
+        setRatingRange([0,5])
         props.setTempItems(props.allItems);
         props.setReSort(!props.reSort);
         props.setOpenFilter(false);
@@ -166,6 +170,7 @@ function Filters(props) {
                     <Tab label="Price" {...a11yProps(0)} />
                     <Tab label="Category" {...a11yProps(1)} />
                     <Tab label="Date" {...a11yProps(2)} />
+                    <Tab label="Rating" {...a11yProps(3)} />
                     </Tabs>
                 </Box>
                 <TabPanel value={tabValue} index={0}>
@@ -212,6 +217,24 @@ function Filters(props) {
                             renderInput={(params) => <TextField {...params} sx={{margin:1}}/>}
                         />
                     </LocalizationProvider>
+                </TabPanel>
+                <TabPanel value={tabValue} index={3}>
+                    <Box sx={{ width: 300 }}>
+                        Set rating range:
+                        <Slider
+                            // getAriaLabel={() => 'Rating range'}
+                            value={ratingRange}
+                            min={0}
+                            max={5}
+                            onChange={handleRatingChange}
+                            valueLabelDisplay="auto"
+                            getAriaValueText={ratingValuetext}
+                        />
+                        <Box sx={{display:"flex", justifyContent:"space-between"}}>
+                            <div>{ratingRange[0]}</div>
+                            <div>{ratingRange[1]}</div>
+                        </Box>
+                    </Box>
                 </TabPanel>
             </Box>
             <Button variant="contained" sx={{mt:"10px", ml:"10px"}} onClick={() => applyFilters()} >Apply filters</Button>

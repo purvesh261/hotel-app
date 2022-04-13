@@ -10,6 +10,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/zoom';
 import './swiperCSS.css';
 import defaultImage from '../../assets/defaultFood.jpg';
+import ItemReviews from './ItemReviews';
 
 const itemStyle = theme => ({
     paddingLeft: "40px",
@@ -31,7 +32,7 @@ function ItemDetails() {
         {
             const res = await axios.get(`http://localhost:5000/items/${id}`, {headers: {'Authorization': 'Bearer ' + localStorage.getItem('accessToken')}});
             setItem(res.data);
-            console.log(res)
+            console.log(res.data)
         }
         catch(err){
             if (err.response && err.response.data) {
@@ -68,8 +69,7 @@ function ItemDetails() {
                         zoom={true}
                         loop={true}
                         slidesPerView={1}
-                        onSlideChange={() => console.log('slide change')}
-                        onSwiper={(swiper) => console.log(swiper)}>
+                        >
                         {
                             item && item.image.length > 0 ?
                             item.image.map((img, index) => {
@@ -102,6 +102,9 @@ function ItemDetails() {
                     <Typography color="text.secondary">
                     {item.description || "No description"}
                     </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                    <ItemReviews item={item}/>
                 </Grid>
             </Grid>
             </>}

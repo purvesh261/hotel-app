@@ -15,6 +15,7 @@ const sortOptions = [
     'Price',
     'Category',
     'Date',
+    'Rating'
 ]
 
 function MenuOptions(props) {
@@ -58,6 +59,9 @@ function MenuOptions(props) {
                 break;
             case sortOptions[3]:
                 setItems([ ...items ].sort((a, b) => (a.createdOn > b.createdOn) ? 1 : -1));
+                break;
+            case sortOptions[4]:
+                setItems([ ...items ].sort((a, b) => (Number(a.averageRating) > Number(b.averageRating)) ? 1 : -1));
                 break;
             default:
                 setItems(items)

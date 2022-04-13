@@ -80,7 +80,7 @@ function Row(props) {
             </TableCell>
             <TableCell align="right">{row.itemName}</TableCell>
             <TableCell align="right">{"₹ " + row.price}</TableCell>
-            <TableCell align="right">{row.category}</TableCell>
+            <TableCell align="right">{row.averageRating}</TableCell>
             <TableCell align="right">{createdOn}</TableCell>
             <TableCell align="right">
                 <Button variant="outlined" startIcon={<EditIcon />} onClick={() => navigate('/admin/edit/' + row._id)} sx={{mr:1}}>
@@ -109,6 +109,12 @@ function Row(props) {
                 </Typography>
                 <Typography variant="body2" noWrap color="text.secondary">
                     Category: {row.category}
+                </Typography>
+                <Typography variant="body2" noWrap color="text.secondary">
+                    Rating: {row.averageRating}
+                </Typography>
+                <Typography variant="body2" noWrap color="text.secondary">
+                    Total reviews: {row.totalRatings}
                 </Typography>
                 <Typography variant="body2" noWrap color="text.secondary">
                     Created on: {createdOn}
@@ -181,7 +187,7 @@ export default function ItemTable(props) {
                     <TableCell />
                     <TableCell align="right">Name</TableCell>
                     <TableCell align="right">Price</TableCell>
-                    <TableCell align="right">Category</TableCell>
+                    <TableCell align="right">Rating</TableCell>
                     <TableCell align="right">Created On</TableCell>
                     <TableCell align="right">Actions
                     </TableCell>
