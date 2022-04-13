@@ -4,7 +4,7 @@ import Menu from '../Menu/Menu';
 import CreateItem from '../Admin/CreateItem';
 import ItemAdmin from '../Admin/ItemAdmin';
 import SignUp from '../Login/SignUp';
-import { Route, Routes, Navigate, withRouter } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import ItemDetails from '../Menu/ItemDetails';
 import jwt_decode from "jwt-decode";
 

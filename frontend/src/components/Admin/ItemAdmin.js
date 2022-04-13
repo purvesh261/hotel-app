@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MenuOptions from '../Menu/MenuOptions';
-import { Grid, Button, Box } from "@mui/material";
+import { Grid, Button } from "@mui/material";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import axios from 'axios';
 import Stack from '@mui/material/Stack';
 import ItemTable from './ItemTable';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import Typography from '@mui/material/Typography';
-import Filters from './Filters';
+import Filters from '../Filters';
 
 function ItemAdmin() {
     const [ items, setItems ] = useState([]);
@@ -50,7 +49,7 @@ function ItemAdmin() {
             </MenuOptions>
             {error && <span>{error}</span>}
             <ItemTable rows={tempItems} getItems={getItems}/>
-            <Filters openFilter={openFilter} setOpenFilter={setOpenFilter} tempItems={tempItems} setTempItems={setTempItems}/>
+            <Filters openFilter={openFilter} setOpenFilter={setOpenFilter} tempItems={tempItems} setTempItems={setTempItems} allItems={items}/>
         </div>
     )
 }

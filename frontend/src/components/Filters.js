@@ -65,27 +65,29 @@ function a11yProps(index) {
   
 function Filters(props) {
     const [value, setValue] = useState(0);
-    const [priceRange, setPriceRange] = useState([0, 100]);
-    const [totalPriceRange, setTotalPriceRange] = useState([0, 100]);
+    const [totalPriceRange, setTotalPriceRange] = useState([0, 300]);
+    const [priceRange, setPriceRange] = useState([0, 300]);
     const [categories, setCategories] = useState([]);
-    const [beforeDate, setBeforeDate] = useState(new Date('2020-01-01'));
-    const [afterDate, setAfterDate] = useState(new Date());
-
+    const [activeCategories, setActiveCategories] = useState({});
+    const initialAfterDate = new Date('2022-01-01');
+    const initialBeforeDate = new Date();
+    const [afterDate, setAfterDate] = useState(initialAfterDate);
+    const [beforeDate, setBeforeDate] = useState(initialBeforeDate);
 
     const setInitialSlider = () => {
-        if(props.tempItems.length > 0)
+        if(props.allItems.length > 0)
         {
-            let min = props.tempItems[0].price;
-            let max = props.tempItems[0].price;
+            let min = props.allItems[0].price;
+            let max = props.allItems[0].price;
             for(let i = 0; i < props.tempItems.length; i++)
             {
-                if(Number(props.tempItems[i].price) < min )
+                if(Number(props.allItems[i].price) < min )
                 {
-                    min = Number(props.tempItems[i].price);
+                    min = Number(props.allItems[i].price);
                 }
                 if(props.tempItems[i].price > max)
                 {
-                    max = Number(props.tempItems[i].price);
+                    max = Number(props.allItems[i].price);
                 }
             }
             setTotalPriceRange([min, max]);
@@ -95,10 +97,16 @@ function Filters(props) {
     }
 
     useEffect(() => {
-        setInitialSlider();
-        setCategories([ ...new Set(props.tempItems.map((item) => item.category))]);
+        // setInitialSlider();
+        // find all the unique categories
+        var categoriesArray = [ ...new Set(props.allItems.map((item) => item.category))]
+        setCategories(categoriesArray);
+        var categoriesObj = {};
+        categoriesArray.map((category) => categoriesObj[category] = true)
+        console.log(categoriesObj)
+        setActiveCategories(categoriesObj);
+    }, [props.allItems])
 
-    }, [props.tempItems])
     const handlePriceChange = (event, newValue) => {
         setPriceRange(newValue);
     };
@@ -106,6 +114,47 @@ function Filters(props) {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
+    const onChangeHandler = (event) => {
+        var { name, checked } = event.target;
+        setActiveCategories({ ...activeCategories, [name]: checked});
+        console.log(activeCategories);
+    }
+
+    const applyFilters = () => {
+        // filter price
+        var { allItems } = props;
+        var newTempItems = allItems.filter((item) => {
+            return Number(item.price) >= priceRange[0] && Number(item.price) <= priceRange[1]
+        })
+
+        //  filter categories
+        newTempItems = newTempItems.filter((item) => {
+            return activeCategories[item.category];
+        })
+
+        // conso    
+        // filter date
+        newTempItems = newTempItems.filter((item) => {
+            let itemDate = new Date(item.createdOn)
+            console.log(item.itemName, itemDate >= afterDate && itemDate <= beforeDate)
+            return (itemDate >= afterDate && itemDate <= beforeDate);
+        })
+
+        props.setTempItems(newTempItems);
+        props.setOpenFilter(false);
+    };
+
+    const resetFilters = () => {
+        setPriceRange(totalPriceRange);
+        var categoriesObj = {};
+        categories.map((category) => categoriesObj[category] = true)
+        setActiveCategories({ ...categoriesObj });
+        setAfterDate(initialAfterDate);
+        setBeforeDate(initialBeforeDate);
+        props.setTempItems(props.allItems);
+        props.setOpenFilter(false);
+    }
 
     return (
         <Modal
@@ -147,7 +196,7 @@ function Filters(props) {
                 <TabPanel value={value} index={1}>
                 <FormGroup>
                     { categories && categories.map((category, index) => {
-                        return <FormControlLabel control={<Checkbox defaultChecked />} label={category} />
+                        return <FormControlLabel control={<Checkbox checked={activeCategories[category]} />} onChange={onChangeHandler} name={category} label={category} />
                     })}                    
                 </FormGroup>
 
@@ -157,21 +206,23 @@ function Filters(props) {
                         <DesktopDatePicker
                             label="After"
                             inputFormat="dd/MM/yyyy"
-                            value={beforeDate}
-                            onChange={handleChange}
+                            value={afterDate}
+                            onChange={(newDate) => setAfterDate(newDate)}
+
                             renderInput={(params) => <TextField {...params} sx={{margin:1}}/>}
                         />
                         <DesktopDatePicker
                             label="Before"
                             inputFormat="dd/MM/yyyy"
-                            value={afterDate}
-                            onChange={handleChange}
+                            value={beforeDate}
+                            onChange={(newDate) => setBeforeDate(newDate)}
                             renderInput={(params) => <TextField {...params} sx={{margin:1}}/>}
                         />
                     </LocalizationProvider>
                 </TabPanel>
             </Box>
-            <Button variant="contained" sx={{mt:"10px", ml:"20px",height:"70%"}} onClick={() => props.setOpenFilter(false)} >Done</Button>
+            <Button variant="contained" sx={{mt:"10px", ml:"10px"}} onClick={() => applyFilters()} >Apply filters</Button>
+            <Button sx={{mt:"10px", ml:"10px"}} onClick={() => resetFilters()} >Reset</Button>
             </Box>
         </Modal>
     )

@@ -3,13 +3,29 @@ import MenuOptions from './MenuOptions';
 import axios from 'axios';
 import ItemCard from './ItemCard';
 import Grid from '@mui/material/Grid';
-import { Typography, Pagination } from '@mui/material';
+import { Typography, Pagination, Button } from '@mui/material';
 import defaultImage from '../../assets/defaultFood.jpg';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import Filters from '../Filters';
+
+const buttonStyle = theme => ({
+    mt:"10px",
+    height:"70%",
+    [theme.breakpoints.down('md')]: {
+        ml:"20px",
+        mb:"20px",
+        mt:"0px",
+        backGroundColor:'red',
+        maxWidth: "90%",
+        height:"50px"
+    }
+})
 
 function Menu() {
     const [menuItems, setMenuItems] = useState([]);
     const [tempItems, setTempItems] = useState([]);
     const [visibleItems, setVisibleItems] = useState([]);
+    const [openFilter, setOpenFilter] = useState(false);
     const [page, setPage] = useState(1);
     const [error, setError] = useState('');
     const CARDS_PER_PAGE = 12;
@@ -59,7 +75,16 @@ function Menu() {
 
     return (
     <div>
-        <MenuOptions allItems={menuItems} items={tempItems} setItems={setTempItems} />
+        <MenuOptions allItems={menuItems} items={tempItems} setItems={setTempItems}>
+            <Grid item xs={12} lg={2}>
+                <Button  fullWidth 
+                    variant="contained"
+                    sx={buttonStyle}
+                    onClick={() => setOpenFilter(true)} >
+                        <FilterListIcon /> Filter
+                </Button>
+            </Grid>
+        </MenuOptions>
                     {error && <div>{error}</div>}
                         {tempItems.length > 0  ? 
                         <>
@@ -84,8 +109,7 @@ function Menu() {
                         </Grid>
 
                     }
-                        {/* </Grid> */}
-
+        <Filters openFilter={openFilter} setOpenFilter={setOpenFilter} tempItems={tempItems} setTempItems={setTempItems} allItems={menuItems}/>
     </div>
     )
 }
