@@ -32,7 +32,6 @@ function ItemDetails() {
         {
             const res = await axios.get(`http://localhost:5000/items/${id}`, {headers: {'Authorization': 'Bearer ' + localStorage.getItem('accessToken')}});
             setItem(res.data);
-            console.log(res.data)
         }
         catch(err){
             if (err.response && err.response.data) {

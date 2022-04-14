@@ -42,14 +42,13 @@ exports.createReview = async (req, res) => {
         var newReview = await Review.create(req.body);
         newReview.save()
         var item = await Item.findOne({_id:newReview.item});
-        item.totalRatings = item.totalRatings + 1;
-        item.averageRating = ((Number(item.averageRating) * item.totalRatings) + Number(newReview.rating)) / (item.totalRatings);
+        item.averageRating = ((Number(item.averageRating) * item.totalRatings) + Number(newReview.rating)) / (item.totalRatings + 1);
         item.averageRating = Number(item.averageRating).toFixed(2);
+        item.totalRatings = item.totalRatings + 1;
         item.save();
         res.send(newReview);
     }
     catch(err) {
-        console.log(err)
         res.status(500).send(error500msg);
     }
 }

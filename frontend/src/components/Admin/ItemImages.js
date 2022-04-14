@@ -78,7 +78,6 @@ export default function ItemImageList({ itemData, setImgData, id }) {
         try {
             var res = await axios.put(`http://localhost:5000/items/image/${id}`, formData, 
             {headers: {'Authorization': 'Bearer ' + localStorage.getItem('accessToken')}});
-            console.log(res);
             itemData.push(res.data.image.at(-1))
             setSeverity("success");
             setAlert("Image uploaded!");
@@ -94,7 +93,6 @@ export default function ItemImageList({ itemData, setImgData, id }) {
     }
 
     const uploadImage = (event) => {
-        console.log();
         const file = event.target.files[0];
         if(file === undefined) {
         } 

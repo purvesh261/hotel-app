@@ -39,7 +39,6 @@ function ItemReviews(props) {
                     }
                 }
             }
-            console.log(res.data, "reviews")
             setReviews(res.data);
         }
         catch(err) {
@@ -106,7 +105,7 @@ function ItemReviews(props) {
                         </Typography>
                         <Typography variant="h6" sx={{fontWeight:"bold"}}>Write a review</Typography>
                         <Rating 
-                            name="half-rating" 
+                            name="rating" 
                             value={userReview.rating} 
                             onChange={(event, newValue) => setUserReview({ ...userReview, rating: newValue })} 
                         />

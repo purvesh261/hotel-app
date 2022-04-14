@@ -66,7 +66,6 @@ function Login() {
     }
 
     const authenticationSuccess = (res) => {
-      console.log(res)
       localStorage.setItem('accessToken', res.data.accessToken)
       localStorage.setItem('user', JSON.stringify(res.data))
       redirectUser(res.data.admin);

@@ -178,6 +178,10 @@ export default function ItemTable(props) {
         getVisibleRows();
     }, [page, rowsPerPage, props.rows])
 
+    React.useEffect(() => {
+        setPage(0);
+    }, [props.rows])
+
     return (
         <>
             <TableContainer component={Paper}>

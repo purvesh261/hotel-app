@@ -10,7 +10,6 @@ const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 exports.authenticate = (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
       return res.status(400).send("Invalid email");
     }
 
@@ -36,7 +35,6 @@ exports.authenticate = (req, res) => {
 exports.createUser = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log(errors)
       return res.status(400).send("Validation error");
     }
 
@@ -56,7 +54,6 @@ exports.createUser = async (req, res) => {
     }
     catch(err)
     {
-        console.log(err)
         return res.status(500).send(error500msg);
     }
 }
@@ -77,7 +74,6 @@ exports.googleLogin = async (req, res) => {
     //  verify token with Google oauth client
     googleClient.verifyIdToken({ idToken: tokenId, audience:process.env.GOOGLE_CLIENT_ID})
         .then(async (response) => {
-            console.log(response, "RESPONSE");
             const { name, email } = response.payload;
             try {
                 var user = await User.findOne({email})

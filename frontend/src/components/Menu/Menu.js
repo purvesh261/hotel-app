@@ -11,7 +11,7 @@ import Filters from '../Filters';
 const buttonStyle = theme => ({
     mt:"10px",
     height:"50%",
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('lg')]: {
         ml:"20px",
         mb:"20px",
         mt:"0px",

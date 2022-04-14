@@ -200,7 +200,7 @@ export default function SignUp() {
               </Grid>
               <Grid item xs={12}>
                 <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" required color="primary" />}
+                  control={<Checkbox value="tAndC" required color="primary" />}
                   label="I agree to the terms and conditions."
                 />
               </Grid>
